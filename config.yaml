@@ -1,0 +1,40 @@
+# config.yaml - Configuração de DANFE personalizado
+
+issuer:
+  name: "EMPRESA TESTE LTDA"
+  document: "12345678000195"
+  state_registration: "07123456789012"
+  municipal_registration: "1234567"
+
+# Configurações de margem (em mm)
+margins:
+  top: 10
+  right: 10
+  bottom: 10
+  left: 10
+
+# Caminho da logo
+logo:
+  path: "./logos/logo.png"
+  width: 30  # largura em mm
+  height: 20  # altura em mm
+
+# Configurações de fonte
+fonts:
+  size_small: 8
+  size_normal: 10
+  size_large: 12
+
+# Cores personalizadas (RGB)
+colors:
+  primary: [33, 128, 141]      # Azul teal
+  secondary: [94, 82, 64]      # Marrom
+  text: [0, 0, 0]              # Preto
+  background: [245, 245, 245]  # Cinza claro
+
+# Layout
+layout:
+  type: "complete"  # complete | simplified
+  show_logo: true
+  show_company_info: true
+  show_additional_info: true
