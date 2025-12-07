@@ -1,0 +1,1066 @@
+Starting CodeRabbit review in plain text mode...
+
+Connecting to review service
+Setting up
+Analyzing
+Reviewing
+
+============================================================================
+File: requirements.txt
+Line: 6
+Type: potential_issue
+
+Prompt for AI Agent:
+In requirements.txt around line 6, the dev-only formatter black is listed as a runtime dependency; remove the "black>=23.0.0" entry from requirements.txt and add it to a separate dev requirements file (e.g., requirements-dev.txt or requirements-test.txt) so runtime installs don't pull development tools; update any project docs or CI/Makefile references to install the appropriate file for dev environments (pip install -r requirements-dev.txt) and keep requirements.txt limited to runtime packages.
+
+
+
+============================================================================
+File: requirements.txt
+Line: 6
+Type: nitpick
+
+Prompt for AI Agent:
+requirements.txt around line 6: the black entry currently uses an overly loose constraint ("black>=23.0.0"), which risks pulling in breaking changes from future major releases; tighten the constraint by specifying an upper bound (for example "black>=23.0.0,<24.0.0") or pin an exact version if you require full reproducibility, then update your lockfile or regenerate dependencies (pip-compile / poetry lock) so the change is applied across environments.
+
+
+
+============================================================================
+File: coderabbit-prompt.txt
+Line: 1 to 851
+Type: potential_issue
+
+Prompt for AI Agent:
+In coderabbit-prompt.txt around lines 1-851, this file is an accidental prompt/placeholder artifact that should not be in source control; remove it with git rm coderabbit-prompt.txt (preferred). If it must be preserved for reference instead of deletion, rename and move it to docs/examples/coderabbit-prompt.example.txt, add a clear header comment stating it is a non-executable example, and update README or add a docs entry explaining its purpose. Alternatively, convert each meaningful prompt into tracked issues in your issue tracker and remove the file from the repo.
+
+
+
+============================================================================
+File: tests/__init__.py
+Line: 1
+Type: nitpick
+
+Prompt for AI Agent:
+tests/__init__.py around lines 1 to 1: the module docstring is overly terse and redundant ("Testes do pacote de testes."); replace it with a more descriptive docstring that explains the purpose of this test package, what kinds of tests it contains (unit/integration), and any setup/fixtures exposed to test modules; keep it short (1–3 sentences), idiomatic Portuguese, and update the first line of the file accordingly.
+
+
+
+============================================================================
+File: src/danfe_generator/web/ux_ui_prompt_versaoweb.md
+Line: 285 to 289
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/ux_ui_prompt_versaoweb.md around lines 285 to 289, the documentation references are using relative paths and a suspicious/corrupted URL parameter: verify that ../../docs/XML_TAGS_REFERENCE.md and ../../docs/XML_STRUCTURE.md actually exist at that relative path and update the links to the correct relative or absolute paths if they do not; inspect the Portal NF-e URL on line 288 and remove or correct the invalid query parameter (tipoConteudo=BMPFMBoln3w=) — replace it with the official, stable NF-e portal link or the correct query string (or omit the query entirely) and ensure the final URL opens the intended documentation page.
+
+
+
+============================================================================
+File: .agent/workflows/python-lint.md
+Line: 14
+Type: potential_issue
+
+Prompt for AI Agent:
+.agent/workflows/python-lint.md around line 14: the inline shell command uses unreliable pattern matching (== with *.py), lacks input validation and ignores black's exit status; update it to first check CLAUDE_TOOL_FILE_PATH is non-empty, match the filename suffix with a reliable regex like '\.py$' (or basename check), verify black is installed, run black on the file and propagate or handle its non-zero exit (e.g., log an error and return a non-zero status), and ensure any failures cause the workflow to fail or surface the error rather than silently continuing.
+
+
+
+============================================================================
+File: docs/API.md
+Line: 128 to 144
+Type: nitpick
+
+Prompt for AI Agent:
+In docs/API.md around lines 128 to 144, add concrete usage examples for the DANFEConfig methods mentioned: show how to call DANFEConfig.from_yaml("path") to load config from a YAML file, how to call config.to_dict() to get a dict, and a short example constructing DANFEConfig with custom values (logo_path as Path, empresa_nome string, MarginsConfig with top/bottom, ColorsConfig with primary tuple) so readers can see both loading from YAML and creating/modifying configs programmatically.
+
+
+
+============================================================================
+File: docs/API.md
+Line: 247 to 256
+Type: nitpick
+
+Prompt for AI Agent:
+In docs/API.md around lines 247 to 256 the file_handlers functions are imported but lack usage examples; add a short examples subsection showing how to import Path from pathlib and call ensure_directory with a Path (e.g. "./pdfs"), list_files_by_extension with a directory Path and extension (e.g. ".xml") returning a list, use get_file_size_formatted with a file Path showing a sample formatted string (e.g. "2.5 MB"), and demonstrate safe_write_file writing bytes/text to a Path; include these as a small code block under the "Arquivos" section so developers can copy-paste practical examples.
+
+
+
+============================================================================
+File: docs/API.md
+Line: 73 to 120
+Type: nitpick
+
+Prompt for AI Agent:
+In docs/API.md around lines 73 to 120, the batch and stream methods lack practical usage examples; add short, clear Python examples immediately after each method docblock: for generate_batch() show calling it with xml_paths and output_dir, how to read BatchResult.success_rate and iterate results to log per-item errors; for generate_from_directory() show a simple call with input_dir and pattern and mention output_dir behavior; for generate_stream() show iterating with "for result in generator.generate_stream(xml_paths):" and handling result.success vs result.error_message to process successes and log failures; also add a brief note describing expected behavior on partial failures (successful items still produced, failed items reported in results) so users know how to handle mixed outcomes.
+
+
+
+============================================================================
+File: docs/XML_TAGS_REFERENCE.md
+Line: 434 to 780
+Type: refactor_suggestion
+
+Prompt for AI Agent:
+In docs/XML_TAGS_REFERENCE.md around lines 432 to 475, the example XML uses optional blocks (, , , ) but there are no dedicated reference sections for them; add four new sections (cobr, pag, infAdic, Signature) between those lines following the same format and level used for previous blocks (heading, one-line tag description, bullet list of child elements with short descriptions and inner fields), documenting fields shown in the example: for cobr describe  (nFat, vOrig, vDesc, vLiq) and  (nDup, dVenc, vDup); for pag document  (tPag, vPag); for infAdic document ; and for Signature document SignedInfo, SignatureValue, KeyInfo/X509Data/X509Certificate and include notes that Signature uses XMLDSig and is required when present.
+
+
+
+============================================================================
+File: pyproject.toml
+Line: 27 to 44
+Type: nitpick
+
+Prompt for AI Agent:
+In pyproject.toml around lines 27 to 44, the review approves the optional dependency structure but requests adding pytest-xdist for parallel test execution; update the [project.optional-dependencies].dev list to include "pytest-xdist>=3.0.0" (keep ordering consistent with other dev entries and preserve trailing commas and comments).
+
+
+
+============================================================================
+File: pyproject.toml
+Line: 6
+Type: potential_issue
+
+Prompt for AI Agent:
+In pyproject.toml around line 6, the requires-python is set to ">=3.12" which is overly restrictive; confirm whether any language features or stdlib APIs require 3.12 and if not, relax the constraint to ">=3.10" (or at least ">=3.11") to increase compatibility; update the requires-python value accordingly and, if you must keep 3.12, add a brief comment in the repo explaining the specific technical reason for that minimum (e.g., uses of new 3.12-only APIs or typing/runtime features).
+
+
+
+============================================================================
+File: .agent/rules/python-pro.md
+Line: 14 to 20
+Type: refactor_suggestion
+
+Prompt for AI Agent:
+In .agent/rules/python-pro.md around lines 14 to 20, the "Focus Areas" list omits explicit coverage of application and code security; add a new bullet for security hardening such as "Security hardening (input validation, injection prevention, secure defaults, secrets handling, dependency vulnerability management)" to the list so the guide explicitly calls out defensive coding, validation, and secure defaults.
+
+
+
+============================================================================
+File: .agent/rules/python-pro.md
+Line: 2 to 8
+Type: potential_issue
+
+Prompt for AI Agent:
+In .agent/rules/python-pro.md around lines 2 to 8, the front-matter trigger ("trigger: always_on") conflicts with the description which says to use "PROACTIVELY" only for specific cases; decide which behavior you want and make these consistent: either (A) keep "trigger: always_on" and remove the word "PROACTIVELY" from the description and any language implying selective use so the policy applies to all Python code, or (B) change the trigger to a restrictive value (e.g., "trigger: on_proactive" or an equivalent) and explicitly state in the description that the rule only applies for proactive refactoring/optimization; update text to clearly reflect the chosen intent.
+
+
+
+============================================================================
+File: README.md
+Line: 422
+Type: nitpick
+
+Prompt for AI Agent:
+README.md around line 422: the changelog entry for v0.2.0 is missing a release date and currently reads "v0.2.0 (Atual)"; update the header to include an ISO-style date and mark it as current, e.g. change it to "v0.2.0 (2025-01-15) - Atual" (or the actual release date) so users can see when the version was released; ensure the date format is consistent with other entries in the changelog.
+
+
+
+============================================================================
+File: .agent/rules/python-pro.md
+Line: 22 to 27
+Type: nitpick
+
+Prompt for AI Agent:
+.agent/rules/python-pro.md around lines 22 to 27: the "Approach" item requiring "Test coverage above 90% with edge cases" is too broad for legacy code; update the wording to clarify that the >90% test coverage target applies to new code and refactors (and critical modules), not necessarily to existing legacy systems, and add a short note encouraging pragmatic goals and incremental coverage improvements for legacy codebases.
+
+
+
+============================================================================
+File: docs/XML_STRUCTURE.md
+Line: 197 to 210
+Type: potential_issue
+
+Prompt for AI Agent:
+In docs/XML_STRUCTURE.md around lines 197 to 210, the XML example omits critical production details: add a brief, clear note that the snippet is simplified for educational purposes; include a placeholder  (xmldsig) section in the example and mention it must be present in real NF-e documents; replace the incomplete digVal "..." by either a realistic example hash value and a short explanation that digVal contains the digest value of the NFe canonicalized content, or explicitly state it is a placeholder and show expected format; keep the example readable but document these required fields so developers are not misled.
+
+
+
+============================================================================
+File: docs/XML_STRUCTURE.md
+Line: 150 to 151
+Type: potential_issue
+
+Prompt for AI Agent:
+In docs/XML_STRUCTURE.md around lines 150-151, the  section is too brief — expand it by adding subsections for each tax group (ICMS, PIS, COFINS, IPI) and within each subsection list the specific variant nodes (e.g., ICMS00, ICMS10, ICMS20, etc.), the internal XML structure for each variant (child element names and types), which fields are mandatory vs optional, and any differences driven by taxpayer regime; also add separate descriptions for PIS variants (PISAliq, PISNT, PISQtd) and COFINS variants with their required fields and example element sequences so implementers know exact structure per variation.
+
+
+
+============================================================================
+File: docs/XML_STRUCTURE.md
+Line: 269 to 275
+Type: potential_issue
+
+Prompt for AI Agent:
+In docs/XML_STRUCTURE.md around lines 269-275 the  example contains the tributary fields cEANTrib, uTrib, qTrib and vUnTrib but the descriptive table for  (lines ~135-146) does not document them; update that table to add entries for cEANTrib (GTIN alternativo / string, optional), uTrib (unidade de tributação / string, optional), qTrib (quantidade tributável / decimal with 4 places, optional) and vUnTrib (valor unitário tributável / decimal with 4 places, optional), including a short description and data type for each so implementers have the necessary field definitions.
+
+
+
+============================================================================
+File: src/danfe_generator/cli/__init__.py
+Line: 5
+Type: nitpick
+
+Prompt for AI Agent:
+In src/danfe_generator/cli/__init__.py around line 5, the __all__ list uses ["main", "cli_app"] but the import at line 3 was done as "cli_app, main"; update the __all__ to match the import order by changing it to ["cli_app", "main"] to keep consistency.
+
+
+
+============================================================================
+File: pyproject.toml
+Line: 24
+Type: potential_issue
+
+Prompt for AI Agent:
+pyproject.toml lines 24-24: the dependency "pyyaml>=6.0" has no upper bound; change it to a safe range such as "pyyaml>=6.0,<8.0" (or "<7.0" if you only want to allow 6.x) to prevent untested major upgrades, update the lockfile (poetry lock / pip-compile) accordingly, and add CI matrix entries to run tests against the intended supported pyyaml versions (current 6.x and at least one newer minor/major like 7.0 if you plan to support it) so PRs surface compatibility issues; verify and document whether tests were run against 7.0+ and, if not supported, explicitly state the supported range in project docs.
+
+
+
+============================================================================
+File: data/xmls/nfe_completa_exemplo.xml
+Line: 292 to 311
+Type: potential_issue
+
+Prompt for AI Agent:
+In data/xmls/nfe_completa_exemplo.xml around lines 292 to 311, the SignatureMethod and DigestMethod use deprecated SHA-1/RSA-SHA1 algorithms; update the SignatureMethod Algorithm to "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" and the DigestMethod Algorithm to "http://www.w3.org/2001/04/xmlenc#sha256" so the signature uses RSA-SHA256 and SHA-256 respectively, leaving other elements (CanonicalizationMethod, Transforms, Reference URI, DigestValue/SignatureValue content handling) intact and ensuring any code that verifies or generates signatures is adjusted to expect SHA-256/RSA-SHA256 algorithms.
+
+
+
+============================================================================
+File: docs/XML_TAGS_REFERENCE.md
+Line: 802 to 810
+Type: potential_issue
+
+Prompt for AI Agent:
+In docs/XML_TAGS_REFERENCE.md around lines 802 to 810, the file ends with an incomplete/garbled final line at 811; open the file, inspect and remove or correct the residual character(s) on line 811 so the file ends cleanly (either delete the incomplete line or replace it with the intended closing text/line break), then save ensuring the file terminates with a proper newline and no stray characters.
+
+
+
+============================================================================
+File: src/danfe_generator/core/config.py
+Line: 110 to 116
+Type: nitpick
+
+Prompt for AI Agent:
+In src/danfe_generator/core/config.py around lines 110 to 116, the __post_init__ uses object.__setattr__ unnecessarily because DANFEConfig is not frozen; replace the object.__setattr__ call with a normal assignment to self.logo_path (e.g., self.logo_path = Path(self.logo_path)) to simplify, or if immutability was intended instead add frozen=True to the dataclass decorator and keep object.__setattr__ as-is; ensure the rest of the class usage matches the chosen approach.
+
+
+
+============================================================================
+File: danfe_gerador.py
+Line: 92 to 97
+Type: potential_issue
+
+Prompt for AI Agent:
+In danfe_gerador.py around lines 92 to 97, the margin .get() calls use default 5 while __init__ sets default margins to 10; update the .get() defaults to 10 (top/right/bottom/left) so partial margin dicts use the same default values as the constructor, keeping behavior consistent.
+
+
+
+============================================================================
+File: tests/test_config.py
+Line: 71 to 79
+Type: nitpick
+
+Prompt for AI Agent:
+In tests/test_config.py around lines 71 to 79, extend the validation coverage by adding assertions that the ColorsConfig validation raises the same ValueError for the secondary and accent fields as for primary; add one test case that constructs ColorsConfig(secondary=(256, 0, 0)) and expects a ValueError with the out-of-range message, and another that constructs ColorsConfig(accent=(255, 0)) and expects a ValueError with the wrong-length message, following the same pytest.raises pattern and error message matching used for primary.
+
+
+
+============================================================================
+File: tests/test_config.py
+Line: 100 to 104
+Type: nitpick
+
+Prompt for AI Agent:
+In tests/test_config.py around lines 100 to 104, the existing test verifies string-to-Path conversion but doesn't cover when a Path object (especially an absolute path) is passed directly; add a new test that constructs a Path object (e.g. an absolute path), passes it to DANFEConfig(logo_path=that_path), and asserts that config.logo_path equals the original Path object to ensure no unintended normalization or mutation occurs.
+
+
+
+============================================================================
+File: tests/test_config.py
+Line: 30 to 38
+Type: nitpick
+
+Prompt for AI Agent:
+In tests/test_config.py around lines 30 to 38, the current tests cover negative and too-large values but miss boundary cases; add a new test method (e.g. test_validation_boundary_values) that constructs MarginsConfig with all margins set to 0 and asserts the fields equal 0, then constructs MarginsConfig with all margins set to 50 and asserts the fields equal 50 so both lower and upper boundaries are accepted without raising.
+
+
+
+============================================================================
+File: src/danfe_generator/web/views/upload.py
+Line: 133
+Type: potential_issue
+
+Prompt for AI Agent:
+Em src/danfe_generator/web/views/upload.py na linha 133, o key do botão de download usa diretamente f"download_{uploaded_file.name}" e pode causar chaves duplicadas se dois arquivos tiverem o mesmo nome; altere para incluir o índice do loop (ex.: usar enumerate para obter i e montar a chave como download_{i}_{uploaded_file.name}) para garantir unicidade; ajuste o loop onde uploaded_file é iterado para usar enumerate e substitua a construção da key para incorporar esse índice.
+
+
+
+============================================================================
+File: src/danfe_generator/utils/colors.py
+Line: 96 to 112
+Type: nitpick
+
+Prompt for AI Agent:
+In src/danfe_generator/utils/colors.py around lines 96 to 112, the darken_color function lacks the same input validation as lighten_color; add checks to ensure rgb is a tuple of three integers each in 0-255 and factor is a float (or number) between 0 and 1 (inclusive), raising ValueError with clear messages on invalid input, then compute the darkened components and clamp each result to 0-255 before returning; mirror the validation style and error messages used in lighten_color so behavior is consistent.
+
+
+
+============================================================================
+File: src/danfe_generator/core/config.py
+Line: 139 to 156
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/core/config.py around lines 139 to 156, the to_dict method omits several configuration fields required to fully serialize the object; update the returned dict to include boolean flags show_logo, show_company_info, show_additional_info and expand the colors mapping to include "text" and "background" (converted to lists like the other colors), keeping existing keys intact so reconstruction/persistence won't lose data.
+
+
+
+============================================================================
+File: tests/conftest.py
+Line: 21 to 143
+Type: nitpick
+
+Prompt for AI Agent:
+In tests/conftest.py around lines 21-143 the large inline sample_xml_content fixture should be externalized to keep the file clean: create tests/fixtures/sample_nfe.xml containing the XML (UTF-8), then replace the current fixture with code that reads and returns that file's contents (use pathlib to build the path relative to the repo/tests directory and open(..., encoding="utf-8") to read text). Ensure the fixture raises a clear FileNotFoundError if the fixture file is missing and update test imports if any tests reference the old inline content.
+
+
+
+============================================================================
+File: src/danfe_generator/utils/colors.py
+Line: 77 to 93
+Type: nitpick
+
+Prompt for AI Agent:
+In src/danfe_generator/utils/colors.py around lines 77 to 93, the function lighten_color lacks input validation: ensure factor is a float (or int) and within 0.0–1.0 and that rgb is a 3-tuple of integers each between 0 and 255; at the top of the function check types and ranges and raise ValueError/TypeError with clear messages for invalid inputs, then proceed with the existing lighten calculation unchanged.
+
+
+
+============================================================================
+File: src/danfe_generator/core/validators.py
+Line: 139 to 144
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/core/validators.py around lines 139-144, the code reads the entire XML into memory and checks for required tags by simple substring search which is unsafe and memory-inefficient; replace this with proper streamed/parsing validation using an XML parser (e.g., xml.etree.ElementTree.parse) to open and parse the file from path (so you avoid loading raw text into memory), catch ParseError and UnicodeDecodeError to return clear ValidationResult errors, and inspect the parsed root tag (stripping any namespace) to verify it matches one of self.REQUIRED_TAGS before returning valid/invalid.
+
+
+
+============================================================================
+File: src/danfe_generator/web/views/upload.py
+Line: 162 to 163
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/views/upload.py around lines 162-163, the function unconditionally deletes logo_path when it lives in the system temp dir, but logo_path is a caller-provided parameter so we must not remove files we didn't create; either remove this cleanup or restrict it to files this function created. Fix by removing the unconditional logo_path.unlink() or by tracking created temp files (e.g., record paths when you create a temp file in this function, or return a context/owner flag) and only unlink if logo_path is in that created-files set (or mark created files with a scoped TemporaryDirectory/NamedTemporaryFile and rely on its cleanup); ensure callers who pass their own paths are not affected and add a brief comment explaining ownership semantics.
+
+
+
+============================================================================
+File: src/danfe_generator/core/validators.py
+Line: 153 to 160
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/core/validators.py around lines 153-160, the code currently inspects the error_message string to decide which exception to raise; replace this fragile string-matching with a direct file existence check before validation: if the provided Path does not exist, raise XMLNotFoundError immediately, otherwise call validate and on failure raise InvalidXMLError with the validation message; alternatively (if you prefer richer validation semantics) add an error_type field to ValidationResult (e.g., "not_found", "invalid_format") and branch on that instead of matching text.
+
+
+
+============================================================================
+File: src/danfe_generator/exceptions.py
+Line: 92 to 108
+Type: nitpick
+
+Prompt for AI Agent:
+In src/danfe_generator/exceptions.py around lines 92 to 108, the DirectoryNotFoundError docstring is missing an example like the other exceptions; add an "Exemplo" section in Portuguese showing how to raise the error and how to access the path via details['path'] (keeping the same docstring style and indentation), e.g. a short snippet demonstrating raising DirectoryNotFoundError("/tmp/foo") and reading e.details["path"] from an except block so the documentation matches the project standard.
+
+
+
+============================================================================
+File: scripts/generate_test_assets.py
+Line: 206 to 224
+Type: nitpick
+
+Prompt for AI Agent:
+In scripts/generate_test_assets.py around lines 206 to 224 the main() function uses hardcoded paths which prevents users from choosing the output location; update main to accept a CLI argument (use argparse) for the base output/data directory (default Path("./data")), import argparse at the top, parse an --output-dir argument (convert to Path if needed), assign data_dir = args.output_dir, and then use that data_dir for creating logos, xmls and the output subdirectory (ensuring directories are created with mkdir(parents=True, exist_ok=True)); keep the same printed messages and behavior otherwise.
+
+
+
+============================================================================
+File: src/danfe_generator/exceptions.py
+Line: 6 to 13
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/exceptions.py around lines 6 to 13, the exception hierarchy diagram is missing DirectoryNotFoundError even though the class is defined later (lines 92-108); update the diagram to include "├── DirectoryNotFoundError  # Diretório não encontrado" (or similar Portuguese description) so the visual list reflects all six derived exceptions.
+
+
+
+============================================================================
+File: src/danfe_generator/cli/main.py
+Line: 289 to 329
+Type: nitpick
+
+Prompt for AI Agent:
+In src/danfe_generator/cli/main.py around lines 289 to 329, the manual loop-based argument parsing is fragile and hard to maintain; replace it with Python's argparse: create an ArgumentParser, add arguments for -o/--output, -l/--logo, -c/--config (all with appropriate dest and default None), -v/--verbose as store_true, --format to accept a string and convert/validate into OutputFormat (use a custom type or post-parse mapping and raise argparse.ArgumentTypeError on invalid values), and --batch as a flag plus an optional positional or optional --input to supply the input_path (make --batch set batch_mode True and if input provided use it, else default to "./xmls"); after parser.parse_args(), assign parser attributes to the existing variables (output, logo, config_file, verbose, format_type, batch_mode, input_path) so behavior matches the original, then remove the manual while loop and any related index logic.
+
+
+
+============================================================================
+File: src/danfe_generator/utils/file_handlers.py
+Line: 24 to 36
+Type: nitpick
+
+Prompt for AI Agent:
+In src/danfe_generator/utils/file_handlers.py around lines 24 to 36 (and also apply to ranges 39-83 and 111-135), the module does not validate input paths and is vulnerable to path traversal or absolute-path misuse; add a private _validate_path(path: Path, base_dir: Path | None = None) helper that resolves the incoming path, optionally resolves the provided base_dir, ensures resolved.relative_to(base_resolved) does not raise (and raises ValueError if it does), and returns the resolved Path; then call this validator at the start of all functions that accept external/user paths (including ensure_directory) to validate and normalize the path before creating directories or opening files so that returned paths are safe and contained within the intended base directory (or explicitly document that functions expect internal-only trusted paths if you opt not to enforce validation).
+
+
+
+============================================================================
+File: src/danfe_generator/core/config.py
+Line: 118 to 137
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/core/config.py around lines 118 to 137, the expression Path(data.get("logo", {}).get("path", "")) or None incorrectly returns Path("") (truthy) instead of None when the path is empty; change the logic to check the raw string first (e.g., get the value into a variable, test if it's a non-empty string) and only wrap it with Path(...) when non-empty, otherwise set logo_path to None.
+
+
+
+============================================================================
+File: src/danfe_generator/utils/file_handlers.py
+Line: 63 to 65
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/utils/file_handlers.py around lines 63 to 65, there is a TOCTOU race and symlink vulnerability between checking path.exists() and copying the file; instead of relying on separate exists/is_symlink checks, ensure you open the target file atomically without following symlinks and copy from that open file descriptor to the backup path opened/created safely. Concretely: replace the exists-then-copy pattern with logic that opens the source using a non-following open (O_NOFOLLOW) or path.open with follow_symlinks=False to ensure it is not a symlink, verify the opened file is a regular file via fstat, then write the backup from that file descriptor (or file object) to the backup path created safely (e.g., open backup path for write and copy file contents), and ensure shutil.copy2 is called with follow_symlinks=False if used; this removes the window for an attacker to swap in a symlink.
+
+
+
+============================================================================
+File: src/danfe_generator/core/validators.py
+Line: 66
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/core/validators.py around line 66, the inline comment next to MAX_SIZE_BYTES incorrectly says "500KB" while the value 512  1024 equals 512KB; update the comment to accurately reflect 512KB (e.g., "512KB") so the comment matches the constant, or if the intent was 500KB change the numeric expression to 500  1024 and keep the comment as "500KB".
+
+
+
+============================================================================
+File: src/danfe_generator/exceptions.py
+Line: 189 to 210
+Type: nitpick
+
+Prompt for AI Agent:
+In src/danfe_generator/exceptions.py around lines 189 to 210, the details dict uses the key "xml_path" which is inconsistent with other errors that use "path"; change the details payload to use "path" (e.g., details={"path": xml_path, "reason": reason}) and update the class docstring Attributes and the __init__ Args text to reference "path" instead of "xml_path" (you may keep the constructor parameter name xml_path but ensure the stored key is "path" for consistency).
+
+
+
+============================================================================
+File: tests/web/test_validators.py
+Line: 135 to 152
+Type: potential_issue
+
+Prompt for AI Agent:
+In tests/web/test_validators.py around lines 135 to 152, the tests use a fake SP IE ("123456789012") and only check length; replace that with known valid SP IE examples (or generate via the SP IE algorithm) and add explicit tests that assert result.valid is True for valid IEs, tests that pass the same numbers with altered check digits and assert result.valid is False, plus tests for at least one other state (e.g., MG or RJ) using their correct valid and invalid examples; ensure tests verify the validator fails on wrong check digits (not just length) and consider parametrize to cover multiple states and edge cases (empty, too short).
+
+
+
+============================================================================
+File: tests/web/test_validators.py
+Line: 53 to 76
+Type: potential_issue
+
+Prompt for AI Agent:
+In tests/web/test_validators.py around lines 53 to 76, add a new unit test that checks a CPF with an invalid check digit (mirror the existing CNPJ check-digit test): create a method named test_cpf_digito_verificador_invalido that calls validate_cpf("52998224726") and asserts result.valid is False; place it alongside the other TestValidateCPF methods so CPF edge-case coverage matches CNPJ tests.
+
+
+
+============================================================================
+File: tests/web/test_validators.py
+Line: 154 to 181
+Type: potential_issue
+
+Prompt for AI Agent:
+In tests/web/test_validators.py around lines 154 to 181, there's a missing unit test for invalid CEP formatting: add a new test function named test_format_cep_invalido placed after test_format_cep that mirrors the other "invalido" tests; it should have a docstring "Testa formatação de CEP inválido retorna original." and assert that format_cep("12345") == "12345".
+
+
+
+============================================================================
+File: tests/web/test_xml_builder.py
+Line: 26 to 67
+Type: nitpick
+
+Prompt for AI Agent:
+In tests/web/test_xml_builder.py around lines 26 to 67, the current tests assert key length and component slices but lack edge-case coverage; add new test functions that (1) verify the check digit (last digit) computed for a known input matches expected value, (2) assert gerar_chave_acesso raises or returns a clear error for invalid or improperly formatted CNPJ values, (3) assert behavior for emission dates in the future and for very old dates (either specific returned keys or raised validation exceptions), and (4) assert behavior when required fields are None or empty (e.g., missing codigo_numerico, modelo, serie) ensuring either validation exceptions are raised or a documented error is returned; keep tests deterministic by using fixed inputs and explicit expected outcomes.
+
+
+
+============================================================================
+File: tests/web/test_xml_builder.py
+Line: 1 to 24
+Type: nitpick
+
+Prompt for AI Agent:
+In tests/web/test_xml_builder.py around lines 1 to 24, add an import for xml.etree.ElementTree (e.g., from xml.etree import ElementTree as ET) and update tests to parse the generated XML with ET.fromstring/ET.parse to perform structural assertions (root tag, namespaces, child elements and attributes) instead of only asserting substrings; ensure parsing is used where tests currently inspect raw strings and replace those string assertions with explicit element lookups and value checks.
+
+
+
+============================================================================
+File: src/danfe_generator/cli/main.py
+Line: 268
+Type: nitpick
+
+Prompt for AI Agent:
+In src/danfe_generator/cli/main.py around line 268, replace the explicit boolean OR check args[0] == "--help" or args[0] == "-h" with a membership test to make the condition more concise and idiomatic: use args[0] in ("--help", "-h") instead. Ensure parentheses or a tuple are used and maintain the same behavior (truthy when first arg is either flag).
+
+
+
+============================================================================
+File: src/danfe_generator/web/views/upload.py
+Line: 88
+Type: nitpick
+
+Prompt for AI Agent:
+In src/danfe_generator/web/views/upload.py around line 88, the parameter uploaded_files is currently typed as the generic list; change it to a more specific type such as list[UploadedFile] (or Sequence[UploadedFile]) to reflect Streamlit's UploadedFile objects: import UploadedFile from streamlit (or from streamlit.runtime.uploaded_file_manager import UploadedFile if needed) or use typing.Sequence for looser coupling, and update the function signature and any imports accordingly so the hint is precise.
+
+
+
+============================================================================
+File: src/danfe_generator/web/views/create.py
+Line: 43
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/views/create.py around line 43, the import format_cnpj is unused; either remove the import to eliminate dead code or apply format_cnpj to the CNPJ value before rendering the template (e.g., replace raw CNPJ usage with the formatted result or pass formatted CNPJ into the template context). Ensure you update any references accordingly and run linting to confirm the unused-import warning is resolved.
+
+
+
+============================================================================
+File: tests/test_generator.py
+Line: 12 to 37
+Type: nitpick
+
+Prompt for AI Agent:
+In tests/test_generator.py around lines 12 to 37, add edge-case unit tests: include one test that constructs a successful GenerationResult with file_size_kb=0 and asserts success is True, file_size_kb equals 0 and error_message is None; add another test that constructs a GenerationResult using very long file paths (e.g., a Path with a repeated segment or length near filesystem limits) for xml_path and pdf_path and assert the object preserves the paths and success/error fields as expected; ensure tests use the existing temp_dir fixture or create Path objects without writing files so they remain fast and isolated.
+
+
+
+============================================================================
+File: tests/test_generator.py
+Line: 171 to 185
+Type: nitpick
+
+Prompt for AI Agent:
+In tests/test_generator.py around lines 171 to 185, the test assumes temp_dir contains only one XML which is brittle; create and use a dedicated subdirectory for this test (e.g., temp_dir / "input") and ensure the sample_xml_file is placed or copied into that subdirectory before calling generator.generate_from_directory(subdir, output_dir) so the test only processes the intended file and is isolated from other fixtures.
+
+
+
+============================================================================
+File: src/danfe_generator/cli/main.py
+Line: 49 to 56
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/cli/main.py around lines 49 to 56, the use of logging.basicConfig is problematic because it only has effect on the first call; subsequent calls with different verbose flags are ignored. Replace basicConfig with explicit logger configuration: get the root logger (logging.getLogger()), set its level based on verbose, and ensure a single StreamHandler is attached (create one only if no handlers exist or replace existing handlers), configure the handler formatter with the current format and datefmt, and set the handler level to the same level so calling this function multiple times with different verbose values updates logging behavior consistently.
+
+
+
+============================================================================
+File: tests/test_generator.py
+Line: 150 to 169
+Type: nitpick
+
+Prompt for AI Agent:
+In tests/test_generator.py around lines 150 to 169, the test currently asserts counts for a mixed valid/invalid batch but does not assert the error message contents; update the test to also inspect result.results for the invalid entry and assert that it contains the expected error information (e.g., an entry with failed status for invalid.xml and a non-empty or specific error message string). Concretely, find the result.results entry corresponding to invalid_xml (by filename/path or index), assert its status indicates failure, and assert its error/message field contains a useful substring like "not a nfe" or "invalid" (and optionally assert the successful entry has no error). Ensure assertions are robust (use contains/any to avoid brittle exact matches).
+
+
+
+============================================================================
+File: src/danfe_generator/cli/main.py
+Line: 175 to 183
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/cli/main.py around lines 175-183, the call to generator.generate_from_directory is unprotected and will raise unhandled exceptions on IO errors (permission, disk full, etc.); wrap the call in a try/except that mirrors cmd_generate: catch specific OS-related exceptions (OSError) and a general Exception fallback, log/print a clear user-facing error message including the exception text, ensure result is set to a failure state (or return 1) on exception, and keep the existing summary/exit-code logic so the CLI returns a non-zero exit code when an error occurs.
+
+
+
+============================================================================
+File: src/danfe_generator/cli/main.py
+Line: 328 to 329
+Type: nitpick
+
+Prompt for AI Agent:
+In src/danfe_generator/cli/main.py around lines 328-329, the argument-parsing branch currently just increments i on unrecognized tokens, silently ignoring unknown flags; change this to detect tokens that look like options (start with '-' or '--') and report them to the user instead of skipping. Specifically, when the current token is unrecognized and begins with '-', either raise a clear error (or print a warning and exit with non-zero code) that names the unknown argument (e.g., "Unknown argument: --verboso"), otherwise keep the current behavior for non-option tokens; ensure the function returns a non-zero exit code on error so callers can detect misuse.
+
+
+
+============================================================================
+File: src/danfe_generator/utils/file_handlers.py
+Line: 86 to 108
+Type: nitpick
+
+Prompt for AI Agent:
+In src/danfe_generator/utils/file_handlers.py around lines 86 to 108, avoid casting the file size to float immediately; keep size as an int from path.stat().st_size and only convert to float when formatting or performing the first division, so change the initialization to use the integer st_size and ensure subsequent division/formatting uses float conversion where needed to preserve behavior while reducing unnecessary early casting.
+
+
+
+============================================================================
+File: scripts/generate_test_assets.py
+Line: 35 to 38
+Type: nitpick
+
+Prompt for AI Agent:
+In scripts/generate_test_assets.py around lines 35-38, the current code tries to load "Arial.ttf" by name which will raise exceptions on non-Windows systems; replace the fragile try/except by either (a) using ImageFont.load_default() directly if a consistent fallback is acceptable, or (b) implement a robust system-font lookup that resolves a full path for a common sans-serif font (use platform detection or a font-config lookup) and call ImageFont.truetype with that resolved path, removing the noisy exceptions.
+
+
+
+============================================================================
+File: src/danfe_generator/core/generator.py
+Line: 279 to 301
+Type: nitpick
+
+Prompt for AI Agent:
+In src/danfe_generator/core/generator.py around lines 279 to 301, generate_stream lacks an output_dir parameter like generate_batch, which prevents streamed generation from writing PDFs to a specific directory; add an optional output_dir: str | Path = None parameter to generate_stream, validate/convert it to a Path if provided, and pass it through to the underlying self.generate call (e.g. self.generate(xml_path, output_dir=output_dir)) so each yielded GenerationResult reflects files written into the specified directory and errors remain handled as before.
+
+
+
+============================================================================
+File: tests/web/test_models.py
+Line: 1 to 249
+Type: nitpick
+
+Prompt for AI Agent:
+In tests/web/test_models.py lines 1-249: the review notes many imported models lack direct unit tests (Cobranca, Destinatario only indirect, InformacoesAdicionais, ProtocoloAutorizacao, Totais) and requests coverage for error/edge cases; add new test functions that directly construct and assert defaults and explicit values for Cobranca, Destinatario, InformacoesAdicionais, ProtocoloAutorizacao, and Totais, include tests for validation errors (e.g., missing required fields or invalid values), boundary values (zero, negative, very large Decimal numbers), and optional-vs-required field behavior, and ensure Totais is tested both standalone and integrated edge cases (frete/desconto/seguro extremes).
+
+
+
+============================================================================
+File: src/danfe_generator/web/app.py
+Line: 92 to 98
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/app.py around lines 92-98, the temporary file created for uploaded logos uses delete=False and the path is returned but never removed, leaking temp files; fix by ensuring the temp file is cleaned up after the request lifecycle—either add a finally block in main() that checks if logo_path is set and exists and calls unlink() (silently ignoring exceptions), or implement a context manager that creates and yields the logo_path and automatically deletes the file on exit; ensure whichever approach you choose handles cases where no logo was uploaded and does not raise on missing files.
+
+
+
+============================================================================
+File: src/danfe_generator/core/generator.py
+Line: 108 to 123
+Type: nitpick
+
+Prompt for AI Agent:
+In src/danfe_generator/core/generator.py around lines 108 to 123, the current cache only stores a truthy Path for a successful logo validation so repeated calls re-run validation for an invalid logo; change the logic to record that validation was performed even when invalid by adding a sentinel or boolean flag (e.g., self._logo_validation_done or a unique _NO_LOGO sentinel) and set it when validation is attempted, then return the cached None on subsequent calls instead of revalidating; ensure successful validations still store the Path in self._validated_logo and that the sentinel/flag distinguishes "not yet validated" from "validated but invalid."
+
+
+
+============================================================================
+File: scripts/generate_test_assets.py
+Line: 6
+Type: potential_issue
+
+Prompt for AI Agent:
+In scripts/generate_test_assets.py around line 6, the import statement "import os" is unused; remove that unused import line to eliminate dead code and keep the file clean, then run linters/tests to confirm no references to os remain.
+
+
+
+============================================================================
+File: src/danfe_generator/cli/main.py
+Line: 134 to 140
+Type: nitpick
+
+Prompt for AI Agent:
+In src/danfe_generator/cli/main.py around lines 134 to 140, the current except Exception: block swallows system-level interrupts (e.g., KeyboardInterrupt, SystemExit); change it so KeyboardInterrupt and SystemExit are not caught and are re-raised, and only handle application-level exceptions (or specific error types) for printing an error and returning 1; in practice, replace the broad except with: re-raise KeyboardInterrupt and SystemExit if caught, and otherwise print the error and return 1 (or explicitly catch only the expected exception classes).
+
+
+
+============================================================================
+File: tests/web/test_models.py
+Line: 5
+Type: nitpick
+
+Prompt for AI Agent:
+In tests/web/test_models.py around lines 5, 8, 11, 19 and 24, several imports (datetime, pytest, Cobranca, InformacoesAdicionais, ProtocoloAutorizacao) are unused; remove those unnecessary import statements from the top of the file (or replace them with only the actually used imports) so the file no longer contains unused imports.
+
+
+
+============================================================================
+File: src/danfe_generator/web/components/layout.py
+Line: 14 to 631
+Type: nitpick
+
+
+
+
+============================================================================
+File: src/danfe_generator/web/components/layout.py
+Line: 19 to 21
+Type: potential_issue
+
+
+
+
+============================================================================
+File: src/danfe_generator/web/views/create.py
+Line: 42 to 48
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/views/create.py around lines 42-48 and the destinatário handling around lines 336-342, the CPF value is collected but not validated despite validate_cpf being imported; call validate_cpf on the collected CPF (same pattern used for CNPJ) and handle validation failure by returning/raising the same kind of form error or flash message and aborting processing so invalid CPFs are rejected; keep the existing import (no removal needed) and mirror the CNPJ validation flow so error messages and control flow remain consistent.
+
+
+
+============================================================================
+File: src/danfe_generator/cli/main.py
+Line: 314 to 316
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/cli/main.py around lines 314-316, the code constructs OutputFormat(args[i + 1]) directly which will raise a ValueError for invalid user input; validate the next argument before converting by catching the invalid value (e.g., use a try/except around OutputFormat(...) or check against known enum values), produce a user-friendly error message and exit or set a safe default, advance i only on successful parse, and adjust the cli_app control flow/return so the function returns/terminates cleanly on error or continues with the validated format.
+
+
+
+============================================================================
+File: tests/test_generator.py
+Line: 102 to 116
+Type: refactor_suggestion
+
+Prompt for AI Agent:
+In tests/test_generator.py around lines 102 to 116, the test currently performs manual cleanup by unlinking the generated PDF (lines 114-116); replace this manual cleanup with a pytest fixture that handles teardown automatically (either a local fixture using yield in the same file or a global autouse fixture in conftest.py). Remove the if expected_output.exists(): expected_output.unlink() block from the test and instead create a fixture that yields control to the test and unlinks the expected_output in the teardown section (or uses tmp_path to generate output in a temp directory), then add the fixture to the test signature (or rely on autouse) so the file is always removed even if the test fails.
+
+
+
+============================================================================
+File: tests/web/test_models.py
+Line: 101 to 114
+Type: nitpick
+
+Prompt for AI Agent:
+In tests/web/test_models.py around lines 101 to 114, the test creates a Produto with seven fields but only asserts two; add assertions to validate numero_item, descricao, ncm, quantidade, and valor_unitario in the test_produto_com_valores function so all provided fields are checked (compare numero_item to 1, descricao to "Notebook Dell", ncm to "84713012", quantidade to Decimal("2.0000"), and valor_unitario to Decimal("3500.0000") while keeping the existing codigo and valor_total assertions).
+
+
+
+============================================================================
+File: tests/web/test_models.py
+Line: 75 to 88
+Type: nitpick
+
+Prompt for AI Agent:
+tests/web/test_models.py around lines 75 to 88: the test instantiates an Endereco with seven fields but only asserts two of them; update the test to assert that numero, bairro, codigo_municipio, nome_municipio and cep are equal to the values provided in addition to the existing logradouro and uf assertions so all provided fields are validated.
+
+
+
+============================================================================
+File: tests/test_generator.py
+Line: 200 to 213
+Type: refactor_suggestion
+
+Prompt for AI Agent:
+In tests/test_generator.py around lines 200 to 213, replace the manual cleanup (checking results[0].pdf_path and unlinking) with a pytest tmp_path (or a dedicated fixture) so output files are created inside a temporary directory that pytest will remove automatically; update the test signature to accept tmp_path, ensure generator.generate_stream writes outputs into tmp_path (or pass tmp_path to the generator/config), assert the result success and existence of the PDF without manual unlinking, and remove the if-unlink block.
+
+
+
+============================================================================
+File: main.py
+Line: 78 to 79
+Type: nitpick
+
+Prompt for AI Agent:
+In main.py around lines 78-79, you raise an IndexError with a specific message but the except handler discards that message and only shows a generic "Opção inválida"; update the error flow so the original message is preserved — either let the IndexError propagate (remove the overly broad except), re-raise it (raise) or include the caught exception's message when reporting to the user (e.g., use the exception's str in the error output or raise a new exception using "from" to chain). Ensure the user-visible output contains the original "Índice fora do intervalo válido" text rather than only the generic message.
+
+
+
+============================================================================
+File: src/danfe_generator/web/views/create.py
+Line: 753 to 761
+Type: potential_issue
+
+
+
+
+============================================================================
+File: src/danfe_generator/web/logic/models.py
+Line: 150 to 165
+Type: potential_issue
+
+
+
+
+============================================================================
+File: src/danfe_generator/web/logic/validators.py
+Line: 224 to 233
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/logic/validators.py around lines 224 to 233, unformat(value: str) currently calls re.sub without guarding against value being None and the repository repeats the same re.sub pattern in multiple validators; update unformat to accept Optional[str] and return an empty string when value is None (or non-str) so it never errors, and then refactor all places that repeat re.sub(r"[^\d]", "", ...) to call unformat(value) instead, ensuring callers validate emptiness/length after unformat rather than performing raw regex themselves.
+
+
+
+============================================================================
+File: src/danfe_generator/web/logic/models.py
+Line: 167 to 189
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/logic/models.py around lines 167 to 189, the campo codigo_municipio_fg is left as an empty string by default but is legally required; add a fix by implementing logic in Identificacao (e.g. a __post_init__): if codigo_municipio_fg is empty, derive a sensible default from codigo_uf (map UF code to a default municipality code) or raise a clear ValueError insisting the caller provide codigo_municipio_fg before XML generation; ensure the error message mentions the field name and NF-e rejection risk so callers know to supply a valid municipality code.
+
+
+
+============================================================================
+File: src/danfe_generator/web/components/layout.py
+Line: 721 to 737
+Type: nitpick
+
+Prompt for AI Agent:
+In src/danfe_generator/web/components/layout.py around lines 721 to 737, the render_file_count_badge function does not validate that the integer count is non-negative which can cause strange rendering; add a short validation at the start of the function to handle negative values (either raise a ValueError or clamp negative counts to 0 and optionally log a warning) so only zero-or-positive values are rendered; after validation use the sanitized count variable in the existing markdown call.
+
+
+
+============================================================================
+File: src/danfe_generator/web/views/create.py
+Line: 56 to 66
+Type: nitpick
+
+Prompt for AI Agent:
+In src/danfe_generator/web/views/create.py around lines 56 to 66, the STATE_PRODUTOS constant and its session_state initialization are unused/dead code because produtos are stored on the NFe instance (nfe.produtos) and the constant is reset elsewhere; remove STATE_PRODUTOS and any session_state key usage (initialization, checks, resets) and update _init_session_state to only initialize STATE_NFE (NFe()), then search the file for any references to STATE_PRODUTOS or st.session_state[STATE_PRODUTOS] and replace them with the appropriate nfe.produtos access or remove them if redundant so session state is only managed via the NFe object.
+
+
+
+============================================================================
+File: run_app.sh
+Line: 7 to 9
+Type: nitpick
+
+Prompt for AI Agent:
+In run_app.sh around lines 7 to 9, the script sources .venv/bin/activate if .venv exists but doesn’t verify activation succeeded; change to first check that .venv/bin/activate exists and is readable, source it, then verify activation (e.g., check that $VIRTUAL_ENV is set or that python -c 'import sys; print(sys.prefix)' points inside .venv) and if verification fails print a clear error to stderr and exit non‑zero so the script doesn't continue with an unactivated environment.
+
+
+
+============================================================================
+File: src/danfe_generator/web/components/layout.py
+Line: 740 to 753
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/components/layout.py around lines 740 to 753, the filename parameter is user-controlled and being interpolated directly into HTML (line ~749), enabling XSS; fix by HTML-escaping the filename and avoiding raw HTML insertion: import and use a safe escape function (e.g., html.escape or markupsafe.escape) to sanitize filename, optionally truncate to a reasonable length and replace newlines, then insert the escaped value into the markup or use Streamlit native text/display functions that auto-escape instead of unsafe_allow_html=True.
+
+
+
+============================================================================
+File: src/danfe_generator/web/logic/models.py
+Line: 240 to 261
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/logic/models.py around lines 240 to 261, the Produto dataclass currently sets NCM and CFOP defaults but does not validate them; add validation in Produto (preferably in a __post_init__ method) to ensure ncm is exactly 8 numeric digits (pad/strip only if intentional) and raise a clear ValueError if not, and ensure cfop is exactly 4 digits and corresponds to a valid CFOP code (validate against the CFOP table or an allowlist/dataset of valid CFOP codes) raising an error for invalid values; keep defaults but enforce validation on instantiation and any setters so invalid values fail fast.
+
+
+
+============================================================================
+File: src/danfe_generator/web/components/layout.py
+Line: 1 to 9
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/components/layout.py around lines 1-9, the module is missing HTML sanitization and currently embeds raw strings with unsafe_allow_html=True; add an import for the stdlib html module (import html) and then apply html.escape() to every string parameter that is concatenated/embedded into HTML in all rendering functions (escape titles, labels, user-provided text, URLs where appropriate) before building the HTML snippet; also stop relying on unsafe_allow_html=True by setting it to False or removing it and render only escaped HTML so user input cannot inject scripts.
+
+
+
+============================================================================
+File: src/danfe_generator/web/logic/models.py
+Line: 335 to 348
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/logic/models.py around lines 335 to 348, the ProtocoloAutorizacao dataclass uses pre-filled values that imply an already-authorized NF-e (e.g., codigo_status="100", motivo="Autorizado o uso da NF-e") and non-empty defaults for fields that should only be populated after SEFAZ returns data; change these fields to be optional and default to None (or empty where appropriate) by: updating type hints to Optional[str] (and Optional[datetime] if needed), removing the hard-coded authorization status/motive defaults, setting chave_nfe, numero_protocolo, digest_value, codigo_status, motivo and similar post-SEFAZ fields to default None, and adding the necessary typing import; keep incluir, ambiente and versao_aplicativo defaults as-is if they are meant to be set before authorization.
+
+
+
+============================================================================
+File: src/danfe_generator/web/logic/validators.py
+Line: 153 to 176
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/logic/validators.py around lines 153 to 176, the function validate_ie does not guard against ie or uf being None and does not validate that uf is a known Brazilian state code; update the function to first check for None (or empty after stripping) for both ie and uf and return appropriate ValidationResult errors, normalize uf to uppercase and verify it exists in the allowed UF set (AC, AL, AP, AM, BA, CE, DF, ES, GO, MA, MT, MS, MG, PA, PB, PR, PE, PI, RJ, RN, RS, RO, RR, SC, SP, SE, TO) returning a ValidationResult(False, f"UF '{uf}' inválida") if not, and only then continue cleaning ie (remove non-digits) and the existing length checks; ensure messages are clear and use uf.upper() when reporting.
+
+
+
+============================================================================
+File: src/danfe_generator/web/components/layout.py
+Line: 649 to 672
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/components/layout.py around lines 649-672 the title, subtitle and badge are interpolated directly into unsafe HTML (lines ~664-667), allowing XSS when user-controlled inputs reach this function; fix by HTML-escaping/sanitizing those three inputs before interpolation (for example use Python's html.escape or an equivalent sanitizer), or avoid unsafe_allow_html entirely and render text via Streamlit's safe text APIs; ensure the sanitized values are used in the f-string and keep unsafe_allow_html only if content is proven safe.
+
+
+
+============================================================================
+File: tests/web/test_xml_builder.py
+Line: 147 to 218
+Type: potential_issue
+
+
+
+
+============================================================================
+File: src/danfe_generator/web/views/create.py
+Line: 488 to 494
+Type: nitpick
+
+Prompt for AI Agent:
+src/danfe_generator/web/views/create.py around lines 488 to 494, the tax calculations mix Decimal values with the int 100 which can lead to precision/inconsistency issues; change the divisions/multiplications that use 100 to use Decimal('100') (and ensure Decimal is imported from decimal) so all operands are Decimal, and confirm aliquota_* and valor_total are Decimal types before the computation.
+
+
+
+============================================================================
+File: src/danfe_generator/web/logic/models.py
+Line: 191 to 213
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/logic/models.py around lines 191 to 213, add runtime validation for CNPJ/CPF: implement/consume helper functions to strip non-digits, verify length (CNPJ=14, CPF=11) and compute/verify the check digits, then call them in dataclass post-initialization; for Emitente validate cnpj when non-empty and raise ValueError on invalid CNPJ; for Destinatario enforce mutual exclusivity (exactly one of cnpj or cpf must be non-empty) and validate the provided identifier with the corresponding verifier, raising ValueError on failures; put helper validators in a utils module and include clear exception messages mentioning which field failed.
+
+
+
+============================================================================
+File: src/danfe_generator/web/logic/validators.py
+Line: 194 to 206
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/logic/validators.py around lines 194 to 206, the format_cpf function does not handle None (or non-string/falsy) inputs; update the signature to accept Optional[str] and add an early guard like "if not cpf: return cpf" (or return an empty string per project convention) before running re.sub, and ensure type hints/imports are adjusted accordingly so the function safely returns without raising when cpf is None or empty.
+
+
+
+============================================================================
+File: src/danfe_generator/web/logic/validators.py
+Line: 209 to 221
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/logic/validators.py around lines 209 to 221, the format_cep function currently crashes when cep is None; update the signature to accept Optional[str] (or keep str but handle None) and add an early guard: if cep is None or cep == "": return "" (or return cep if you prefer preserving None) before running re.sub, then proceed with the existing numeric filtering and formatting logic so the function no longer throws on None inputs.
+
+
+
+============================================================================
+File: src/danfe_generator/web/logic/validators.py
+Line: 179 to 191
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/logic/validators.py around lines 179 to 191, the format_cnpj function assumes cnpj is a string and will raise if passed None; update the signature to accept Optional[str] and add an early guard (e.g., if not cnpj: return "" or return cnpj) before calling re.sub so None or empty values are handled safely, keeping the existing formatting logic unchanged.
+
+
+
+============================================================================
+File: src/danfe_generator/web/components/layout.py
+Line: 691 to 701
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/components/layout.py around lines 691 to 701, title and icon are interpolated directly into an HTML string creating an XSS risk; escape both values (e.g., use html.escape) before building the markup, add the necessary import (import html) if missing, and use the escaped variables in the f-string passed to st.markdown to ensure user-controlled content cannot inject HTML/JS.
+
+
+
+============================================================================
+File: src/danfe_generator/web/logic/validators.py
+Line: 98 to 112
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/logic/validators.py around lines 98 to 112, the function validate_cep calls re.sub on cep without guarding against None or non-string inputs; add an early check that cep is not None and is a string (or coerce to string if appropriate), and if it's None/empty return ValidationResult(False, "CEP não pode ser vazio") (or a similar message) before performing re.sub and length checks so the function never raises when given None.
+
+
+
+============================================================================
+File: src/danfe_generator/web/components/layout.py
+Line: 756 to 778
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/components/layout.py around lines 756 to 778, the function render_empty_state injects icon, title and subtitle directly into an HTML string creating an XSS risk; fix by escaping those values before interpolation (e.g. import html at module top and call html.escape() on icon, title and subtitle) and then use the escaped variables in the f-string (keeping unsafe_allow_html=True is acceptable only because inputs are escaped).
+
+
+
+============================================================================
+File: src/danfe_generator/web/logic/validators.py
+Line: 115 to 129
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/logic/validators.py around lines 115 to 129, validate_ncm currently assumes a valid string and will error on None or non-string inputs; add an explicit input guard at the top (if ncm is None or not isinstance(ncm, str) return ValidationResult(False, "NCM deve ser uma string")), then strip whitespace (or call ncm = ncm.strip()), then run the regex, and if the result is empty return ValidationResult(False, "NCM não pode ser vazio"); keep the existing length check and final success return; optionally wrap the re.sub in a try/except and return a failed ValidationResult with a clear message on unexpected errors.
+
+
+
+============================================================================
+File: src/danfe_generator/web/logic/validators.py
+Line: 60 to 95
+Type: potential_issue
+
+
+
+
+============================================================================
+File: src/danfe_generator/web/logic/models.py
+Line: 367 to 387
+Type: nitpick
+
+Prompt for AI Agent:
+In src/danfe_generator/web/logic/models.py around lines 367 to 387, the sum() calls that aggregate Decimal fields should include an explicit start=Decimal("0.00") to ensure the result is a Decimal (preventing int fallback on empty iterables) — update each sum() on lines ~372-380 to pass start=Decimal("0.00") and, if not already present, add "from decimal import Decimal" at the top of the module; keep existing early-return intact.
+
+
+
+============================================================================
+File: src/danfe_generator/web/logic/validators.py
+Line: 20 to 57
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/logic/validators.py around lines 20 to 57, the function assumes cnpj is a non-empty string and indexes cnpj[0] before checking length, which will raise TypeError on None/non-string and can misbehave for short inputs; first validate the input type and presence (if not isinstance(cnpj, str) or not cnpj: return ValidationResult(False, "CNPJ inválido")), then perform the non-digit removal, then check length != 14 before any indexing, and only after that check for all-equal digits (e.g. compare to cnpj[0] * 14 safely). Ensure every early-return uses a clear ValidationResult message.
+
+
+
+============================================================================
+File: src/danfe_generator/web/logic/xml_builder.py
+Line: 60 to 90
+Type: nitpick
+
+Prompt for AI Agent:
+In src/danfe_generator/web/logic/xml_builder.py around lines 60 to 90, the gerar_chave_acesso function builds the 44-digit key but lacks input validation; add concise checks before composing the key: verify emit.cnpj is digits and length 11 or 14 (then zfill to 14), ide.codigo_numerico is digits and length <= 8 (zfill 8), ide.codigo_uf is digits and length <=2, ide.data_hora_emissao is a datetime, ide.modelo is digits length <=2, ide.serie and ide.numero_nf are integers or digit-strings within expected lengths (zfill 3 and 9), and ide.tipo_emissao/tpemis is a single digit; if any check fails raise ValueError with a clear message so invalid inputs fail fast instead of producing a wrong chave.
+
+
+
+============================================================================
+File: src/danfe_generator/web/logic/xml_builder.py
+Line: 283 to 307
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/logic/xml_builder.py around lines 283 to 307, the code hardcodes ICMS00, PISAliq and COFINSAliq tags regardless of each product's CST; update the implementation so the XML group tag is chosen dynamically from the CST value. Add/ensure the Impostos model includes fields indicating the regime/type for ICMS/PIS/COFINS (or derive it from the CST fields), implement small helper mappings _get_icms_tag_from_cst(cst), _get_pis_tag_from_cst(cst), _get_cofins_tag_from_cst(cst) that return the correct element name (e.g., "ICMS40", "PISNT", "COFINSOutr"), and replace the fixed SubElement(icms, "ICMS00") / SubElement(pis, "PISAliq") / SubElement(cofins, "COFINSAliq") calls with SubElement(icms, icms_tag) etc.; after creating the correct group element, populate only the fields required for that regime (e.g., ICMS40 uses ind_exigibilidade/vICMS? per spec) following NF-e 4.00 rules so the emitted XML matches the CST-specific structure.
+
+
+
+============================================================================
+File: src/danfe_generator/web/logic/xml_builder.py
+Line: 34 to 36
+Type: potential_issue
+
+Prompt for AI Agent:
+In src/danfe_generator/web/logic/xml_builder.py around lines 34-36, the datetime formatter hardcodes "-03:00"; change it so the timezone is not hardcoded by making the function accept a timezone/ensure dt is timezone-aware and format the offset dynamically: update the signature to accept either a timezone (tz: Optional[tzinfo] = None) or require an aware datetime, call dt = dt.astimezone(tz) if tz provided (or dt if already aware), compute the offset via dt.utcoffset() and format the datetime using strftime with %Y-%m-%dT%H:%M:%S then append the offset formatted as ±HH:MM (or use dt.strftime('%z') and insert the colon), and provide a sensible default fallback (e.g., system local timezone) or raise a clear error if dt is naive and no tz provided.
+
+
+
+============================================================================
+File: src/danfe_generator/web/logic/xml_builder.py
+Line: 148 to 159
+Type: nitpick
+
+Prompt for AI Agent:
+In src/danfe_generator/web/logic/xml_builder.py around lines 148 to 159, the code removes the XML declaration by string-matching minidom output and then reinserts a manual declaration, which is fragile; instead call dom.toprettyxml with encoding="UTF-8" to let minidom produce a single correct declaration as bytes, decode that bytes object to a str (utf-8) and return it (optionally strip only a single trailing newline), removing the manual split/join and manual declaration logic.
+
+
+
+Review completed ✔

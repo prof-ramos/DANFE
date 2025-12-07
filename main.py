@@ -5,39 +5,34 @@ import sys
 from pathlib import Path
 from danfe_gerador import DANFEPersonalizado
 
+
 def main():
-    # Cores da empresa (ASOF)
-    cores_asof = {
-        'primary': [41, 150, 161],      # Teal ASOF
-        'secondary': [94, 82, 64],      # Marrom neutro
-        'accent': [192, 21, 47],        # Vermelho
+    cores_personalizadas = {
+        "primary": [41, 150, 161],
+        "secondary": [94, 82, 64],
+        "accent": [192, 21, 47],
     }
 
     # Margens padrão
-    margens = {
-        'top': 10,
-        'right': 10,
-        'bottom': 10,
-        'left': 10
-    }
+    margens = {"top": 10, "right": 10, "bottom": 10, "left": 10}
 
     # Criar gerador
     print("🔧 Inicializando gerador DANFE...")
     gerador = DANFEPersonalizado(
-        logo_path='./logos/logo.png',
-        empresa_nome='ASOF',
-        cores_personalizadas=cores_asof,
-        margens=margens
+        logo_path="./logos/logo.png",
+        empresa_nome="Empresa",
+        cores_personalizadas=cores_personalizadas,
+        margens=margens,
     )
 
     # Opções
     if len(sys.argv) > 1:
         arg = sys.argv[1]
 
-        if arg == '--lote':
+        if arg == "--lote":
             # Processar lote
-            pasta_xmls = Path('./xmls')
-            pasta_saida = Path('./danfes_saida')
+            pasta_xmls = Path("./xmls")
+            pasta_saida = Path("./danfes_saida")
 
             if not pasta_xmls.exists():
                 print(f"✗ Pasta não encontrada: {pasta_xmls}")
@@ -45,10 +40,10 @@ def main():
 
             gerador.gerar_lote(str(pasta_xmls), str(pasta_saida))
 
-        elif arg.endswith('.xml'):
+        elif arg.endswith(".xml"):
             # Gerar single
             xml_path = arg
-            output = Path(xml_path).stem + '.pdf'
+            output = Path(xml_path).stem + ".pdf"
 
             gerador.gerar_danfe(xml_path, output)
         else:
@@ -61,8 +56,8 @@ def main():
         # Modo interativo
         print("\n📁 Arquivos disponíveis:")
 
-        pasta_xmls = Path('./xmls')
-        xmls = list(pasta_xmls.glob('*.xml'))
+        pasta_xmls = Path("./xmls")
+        xmls = list(pasta_xmls.glob("*.xml"))
 
         if not xmls:
             print("✗ Nenhum XML encontrado em ./xmls")
@@ -75,11 +70,13 @@ def main():
 
         opcao = input("\nEscolha uma opção: ").strip()
 
-        if opcao == '0':
-            gerador.gerar_lote(str(pasta_xmls), './danfes_saida')
+        if opcao == "0":
+            gerador.gerar_lote(str(pasta_xmls), "./danfes_saida")
         else:
             try:
                 idx = int(opcao) - 1
+                if idx < 0 or idx >= len(xmls):
+                    raise IndexError("Índice fora do intervalo válido")
                 xml_selecionado = xmls[idx]
                 gerador.gerar_danfe(str(xml_selecionado))
             except (ValueError, IndexError):
@@ -88,5 +85,6 @@ def main():
 
     return 0
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     sys.exit(main())

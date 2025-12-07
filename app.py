@@ -5,11 +5,7 @@ import os
 from danfe_gerador import DANFEPersonalizado
 
 # Configuração da página
-st.set_page_config(
-    page_title="Gerador de DANFE",
-    page_icon="📄",
-    layout="wide"
-)
+st.set_page_config(page_title="Gerador de DANFE", page_icon="📄", layout="wide")
 
 # Título e Descrição
 st.title("📄 Gerador de DANFE Personalizado")
@@ -24,18 +20,24 @@ with st.sidebar:
 
     # Logo
     st.subheader("Logo")
-    uploaded_logo = st.file_uploader("Upload da Logo (PNG/JPG)", type=['png', 'jpg', 'jpeg'])
+    uploaded_logo = st.file_uploader(
+        "Upload da Logo (PNG/JPG)", type=["png", "jpg", "jpeg"]
+    )
 
-    logo_path = './logos/logo.png' # Default
+    # Verificar se logo padrão existe
+    default_logo = "./logos/logo.png"
+    logo_path = default_logo if Path(default_logo).exists() else None
+
     if uploaded_logo:
         # Salvar logo temporária
-        with tempfile.NamedTemporaryFile(delete=False, suffix=Path(uploaded_logo.name).suffix) as tmp_logo:
+        with tempfile.NamedTemporaryFile(
+            delete=False, suffix=Path(uploaded_logo.name).suffix
+        ) as tmp_logo:
             tmp_logo.write(uploaded_logo.getvalue())
             logo_path = tmp_logo.name
 
     # Cores
     st.subheader("Cores")
-    # Cores padrão ASOF
     default_primary = "#2996A1"
     default_secondary = "#5E5240"
     default_accent = "#C0152F"
@@ -49,13 +51,13 @@ with st.sidebar:
         c_accent = st.color_picker("Destaque", default_accent)
 
     def hex_to_rgb(hex_color):
-        hex_color = hex_color.lstrip('#')
-        return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+        hex_color = hex_color.lstrip("#")
+        return tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))
 
     cores_personalizadas = {
-        'primary': list(hex_to_rgb(c_primary)),
-        'secondary': list(hex_to_rgb(c_secondary)),
-        'accent': list(hex_to_rgb(c_accent))
+        "primary": list(hex_to_rgb(c_primary)),
+        "secondary": list(hex_to_rgb(c_secondary)),
+        "accent": list(hex_to_rgb(c_accent)),
     }
 
     # Margens
@@ -68,76 +70,75 @@ with st.sidebar:
         m_left = st.number_input("Esquerda", value=10, min_value=0, max_value=50)
         m_right = st.number_input("Direita", value=10, min_value=0, max_value=50)
 
-    margens = {
-        'top': m_top,
-        'right': m_right,
-        'bottom': m_bottom,
-        'left': m_left
-    }
+    margens = {"top": m_top, "right": m_right, "bottom": m_bottom, "left": m_left}
 
 # Área Principal
 st.header("📤 Upload de XMLs")
 
 uploaded_files = st.file_uploader(
-    "Arraste e solte arquivos XML aqui",
-    type=['xml'],
-    accept_multiple_files=True
+    "Arraste e solte arquivos XML aqui", type=["xml"], accept_multiple_files=True
 )
 
 if uploaded_files:
     if st.button("🚀 Gerar DANFEs", type="primary"):
-
         # Container para resultados
         results_container = st.container()
 
         # Inicializar gerador
         gerador = DANFEPersonalizado(
             logo_path=logo_path,
-            empresa_nome="Empresa", # Opcional, pode ser extraído do XML ou input
+            empresa_nome="Empresa",  # Opcional, pode ser extraído do XML ou input
             cores_personalizadas=cores_personalizadas,
-            margens=margens
+            margens=margens,
         )
 
         # Processar arquivos
         with st.spinner(f"Processando {len(uploaded_files)} arquivos..."):
             for uploaded_file in uploaded_files:
-                # Criar arquivo temporário para o XML
-                with tempfile.NamedTemporaryFile(delete=False, suffix='.xml') as tmp_xml:
-                    tmp_xml.write(uploaded_file.getvalue())
-                    tmp_xml_path = tmp_xml.name
+                tmp_xml_path = None
+                output_pdf_path = None
 
-                # Definir path de saída temporário
-                output_pdf_path = tmp_xml_path.replace('.xml', '.pdf')
+                try:
+                    # Criar arquivo temporário para o XML
+                    with tempfile.NamedTemporaryFile(
+                        delete=False, suffix=".xml"
+                    ) as tmp_xml:
+                        tmp_xml.write(uploaded_file.getvalue())
+                        tmp_xml_path = tmp_xml.name
 
-                # Gerar DANFE
-                success = gerador.gerar_danfe(tmp_xml_path, output_pdf_path)
+                    # Definir path de saída temporário
+                    output_pdf_path = tmp_xml_path.replace(".xml", ".pdf")
 
-                if success:
-                    with open(output_pdf_path, "rb") as pdf_file:
-                        pdf_bytes = pdf_file.read()
+                    # Gerar DANFE
+                    success = gerador.gerar_danfe(tmp_xml_path, output_pdf_path)
 
-                    col_res1, col_res2 = results_container.columns([3, 1])
-                    with col_res1:
-                        st.success(f"✅ {uploaded_file.name} gerado com sucesso!")
-                    with col_res2:
-                        st.download_button(
-                            label="⬇️ Baixar PDF",
-                            data=pdf_bytes,
-                            file_name=f"{Path(uploaded_file.name).stem}.pdf",
-                            mime="application/pdf",
-                            key=uploaded_file.name
-                        )
+                    if success:
+                        with open(output_pdf_path, "rb") as pdf_file:
+                            pdf_bytes = pdf_file.read()
 
-                    # Limpar PDF temp
-                    os.unlink(output_pdf_path)
-                else:
-                    st.error(f"❌ Erro ao processar {uploaded_file.name}")
+                        col_res1, col_res2 = results_container.columns([3, 1])
+                        with col_res1:
+                            st.success(f"✅ {uploaded_file.name} gerado com sucesso!")
+                        with col_res2:
+                            st.download_button(
+                                label="⬇️ Baixar PDF",
+                                data=pdf_bytes,
+                                file_name=f"{Path(uploaded_file.name).stem}.pdf",
+                                mime="application/pdf",
+                                key=uploaded_file.name,
+                            )
+                    else:
+                        st.error(f"❌ Erro ao processar {uploaded_file.name}")
 
-                # Limpar XML temp
-                os.unlink(tmp_xml_path)
+                finally:
+                    # Limpar arquivos temporários independente de sucesso/erro
+                    if tmp_xml_path and os.path.exists(tmp_xml_path):
+                        os.unlink(tmp_xml_path)
+                    if output_pdf_path and os.path.exists(output_pdf_path):
+                        os.unlink(output_pdf_path)
 
         # Limpar logo temp se foi upload
-        if uploaded_logo and os.path.exists(logo_path):
+        if uploaded_logo and logo_path and os.path.exists(logo_path):
             os.unlink(logo_path)
 
 # Footer

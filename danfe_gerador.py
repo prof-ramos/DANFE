@@ -1,4 +1,5 @@
 from brazilfiscalreport.danfe import Danfe
+from brazilfiscalreport.danfe.config import DanfeConfig, Margins
 from pathlib import Path
 from typing import Optional
 
@@ -81,28 +82,24 @@ class DANFEPersonalizado:
             xml_content = xml_file.read_text(encoding='utf-8')
             print(f"✓ XML lido: {xml_file.name}")
 
-            # Validar logo se configurada
-            if self.logo_path and not self.validar_logo():
+            # Validar logo se configurada (usar variável local para não mutar estado)
+            logo_para_usar = self.logo_path
+            if logo_para_usar and not self.validar_logo():
                 print("⚠ Gerando DANFE sem logo")
-                self.logo_path = None
+                logo_para_usar = None
 
             # Configurar margens
-            margins_config = None
-            if self.margens:
-                from brazilfiscalreport.danfe.config import Margins
-                margins_config = Margins(
-                    top=self.margens.get('top', 5),
-                    right=self.margens.get('right', 5),
-                    bottom=self.margens.get('bottom', 5),
-                    left=self.margens.get('left', 5)
-                )
+            margins_config = Margins(
+                top=self.margens.get('top', 5),
+                right=self.margens.get('right', 5),
+                bottom=self.margens.get('bottom', 5),
+                left=self.margens.get('left', 5)
+            )
 
             # Configurar DANFE
-            from brazilfiscalreport.danfe.config import DanfeConfig
-
             danfe_config = DanfeConfig(
-                logo=self.logo_path,
-                margins=margins_config if margins_config else Margins()
+                logo=logo_para_usar,
+                margins=margins_config
             )
 
             danfe = Danfe(xml_content, config=danfe_config)
@@ -160,7 +157,7 @@ class DANFEPersonalizado:
         for xml_file in pasta_xml.glob('*.xml'):
             stats['total'] += 1
 
-            output_file = pasta_saida / xml_file.stem
+            output_file = pasta_saida / f"{xml_file.stem}.pdf"
 
             print(f"\n[{stats['total']}] {xml_file.name}")
 
