@@ -3,10 +3,5 @@
 
 set -e
 
-# Ativar venv se existir
-if [ -d ".venv" ]; then
-    source .venv/bin/activate
-fi
-
-# Executar Streamlit
-streamlit run src/danfe_generator/web/app.py "$@"
+# Executar Streamlit via uv run (gerencia venv automaticamente)
+uv run streamlit run src/danfe_generator/web/app.py "$@"

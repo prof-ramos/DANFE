@@ -1,3 +1,15 @@
+---
+title: DANFE Generator
+emoji: 📄
+colorFrom: green
+colorTo: blue
+sdk: streamlit
+sdk_version: 1.30.0
+app_file: app.py
+pinned: false
+license: mit
+---
+
 # DANFE Generator
 
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
