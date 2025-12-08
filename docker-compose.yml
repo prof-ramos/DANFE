@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  danfe:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: danfe-generator:latest
+    container_name: danfe-generator
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    environment:
+      - STREAMLIT_ENV=production
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_THEME_BASE=light
+    healthcheck:
+      # Usa Python (curl não disponível na imagem slim)
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8501/_stcore/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    # Limites de recursos recomendados para produção
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M

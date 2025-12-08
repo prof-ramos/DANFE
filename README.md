@@ -423,23 +423,26 @@ docker run -d -p 8501:8501 --name danfe danfe-generator
 open http://localhost:8501
 ```
 
-### Docker Compose (Produção)
+### Docker Compose
 
-```yaml
-# docker-compose.yml
-version: '3.8'
-services:
-  danfe:
-    build: .
-    ports:
-      - "8501:8501"
-    restart: unless-stopped
-    healthcheck:
-      # Usa Python (curl não disponível na imagem slim)
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8501/_stcore/health')"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+O projeto inclui configurações otimizadas para desenvolvimento e produção.
+
+#### Desenvolvimento (Hot Reload)
+
+Use este modo para desenvolver. As alterações no código são refletidas imediatamente.
+
+```bash
+# Iniciar em modo desenvolvimento
+docker compose -f docker-compose.dev.yml up
+```
+
+#### Produção
+
+Use este modo para deploy. A imagem é otimizada e segura (non-root).
+
+```bash
+# Iniciar em modo produção (detached)
+docker compose -f docker-compose.yml up -d
 ```
 
 ### Variáveis de Ambiente

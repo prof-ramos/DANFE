@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  danfe:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: danfe-generator:dev
+    container_name: danfe-generator-dev
+    restart: no
+    ports:
+      - "8501:8501"
+    environment:
+      - STREAMLIT_ENV=development
+      - STREAMLIT_SERVER_PORT=8501
+      # Habilita debug mode do Streamlit
+      - STREAMLIT_SERVER_RUN_ON_SAVE=true
+      - STREAMLIT_SERVER_FILE_WATCHER_TYPE=auto
+    volumes:
+      # Hot reload: monta o código local dentro do container
+      - ./src:/app/src
+      - ./.streamlit:/app/.streamlit
+      # Persiste dados locais
+      - ./data:/app/data
+      - ./danfes_saida:/app/output
+    # Em dev, queremos ver os logs imediatamente
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
