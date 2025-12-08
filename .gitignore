@@ -48,3 +48,6 @@ Thumbs.db
 
 # Package manager
 uv.lock
+
+# Removed scripts
+scripts/generate_test_assets.py
