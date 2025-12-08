@@ -3,9 +3,7 @@ title: DANFE Generator
 emoji: 📄
 colorFrom: green
 colorTo: blue
-sdk: streamlit
-sdk_version: 1.30.0
-app_file: app.py
+sdk: docker
 pinned: false
 license: mit
 ---
