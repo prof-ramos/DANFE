@@ -398,7 +398,15 @@ THEME_CSS = """
     .stTextInput > div > div > input:focus,
     .stNumberInput > div > div > input:focus {
         border-color: var(--fiscal-verde) !important;
-        box-shadow: 0 0 0 2px rgba(0, 151, 57, 0.2) !important;
+        box-shadow: 0 0 0 3px rgba(0, 151, 57, 0.4) !important;
+        outline: none !important;
+    }
+
+    /* Icon alignment utility */
+    .icon-text {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
     /* ========================================
@@ -658,13 +666,17 @@ def render_hero(
         subtitle: Subtítulo descritivo.
         badge: Texto do badge.
     """
+    from danfe_generator.web.components.icons import get_svg, COLOR_VERDE_LIGHT
+
+    icon = get_svg("diamond", color=COLOR_VERDE_LIGHT, size=14)
+
     st.markdown(
         f"""
         <div class="hero-container">
             <div class="hero-title">{title}</div>
             <div class="hero-subtitle">{subtitle}</div>
             <div class="hero-badge">
-                <span>◆</span> {badge}
+                {icon} {badge}
             </div>
         </div>
         """,
@@ -674,12 +686,16 @@ def render_hero(
 
 def render_sidebar_logo() -> None:
     """Renderiza logo na sidebar."""
+    from danfe_generator.web.components.icons import get_svg, COLOR_GOLD
+
+    icon = get_svg("diamond", color=COLOR_GOLD, size=40, stroke_width=1.5)
+
     st.markdown(
-        """
+        f"""
         <div style="text-align: center; padding: 1rem 0;">
-            <span style="font-size: 2.5rem;">◆</span>
+            <div style="margin-bottom: 0.5rem;">{icon}</div>
             <div style="font-family: 'Sora', sans-serif; font-size: 1.1rem;
-                 font-weight: 700; color: #D4D4E0; margin-top: 0.5rem;">
+                 font-weight: 700; color: #D4D4E0;">
                 DANFE<span style="color: #FFCC00;">GEN</span>
             </div>
         </div>
@@ -688,15 +704,19 @@ def render_sidebar_logo() -> None:
     )
 
 
-def render_section_title(title: str, icon: str = "◇") -> None:
+def render_section_title(title: str, icon_name: str = "diamond") -> None:
     """Renderiza título de seção estilizado.
 
     Args:
         title: Texto do título.
-        icon: Ícone opcional.
+        icon_name: Nome do ícone (Lucide).
     """
+    from danfe_generator.web.components.icons import get_svg, COLOR_GOLD
+
+    icon_svg = get_svg(icon_name, color=COLOR_GOLD, size=16)
+
     st.markdown(
-        f'<div class="sidebar-section-title">{icon} {title}</div>',
+        f'<div class="sidebar-section-title">{icon_svg} {title}</div>',
         unsafe_allow_html=True,
     )
 
@@ -724,13 +744,17 @@ def render_file_count_badge(count: int) -> None:
     Args:
         count: Número de arquivos.
     """
+    from danfe_generator.web.components.icons import get_svg, COLOR_VERDE_LIGHT
+
+    icon = get_svg("file-text", color=COLOR_VERDE_LIGHT, size=16)
+
     st.markdown(
         f"""
         <div style="display: inline-flex; align-items: center; gap: 0.5rem;
              background: rgba(0, 151, 57, 0.1); border: 1px solid rgba(0, 151, 57, 0.3);
              border-radius: 100px; padding: 0.5rem 1rem; margin: 1rem 0;
              font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #00C04B;">
-            <span>◆</span> {count} arquivo(s) carregado(s)
+            {icon} {count} arquivo(s) carregado(s)
         </div>
         """,
         unsafe_allow_html=True,
@@ -743,32 +767,49 @@ def render_processing_status(filename: str) -> None:
     Args:
         filename: Nome do arquivo sendo processado.
     """
+    from danfe_generator.web.components.icons import get_svg, COLOR_GOLD
+
+    # Ícone com animação de rotação via CSS (já definida no layout global?)
+    # Vamos adicionar uma classe de animação inline ou usar a existente se houver
+    icon = get_svg("refresh-cw", color=COLOR_GOLD, size=16)
+
+    # Adicionando style spin manualmente no svg wrapper se necessário,
+    # mas o get_svg retorna uma string fixa. Vamos envolver em div.
+
     st.markdown(
         f"""
-        <div style="font-family: 'JetBrains Mono', monospace; color: #FFCC00; font-size: 0.85rem;">
-            ⟳ Processando: {filename}
+        <div style="font-family: 'JetBrains Mono', monospace; color: #FFCC00; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+            <div style="animation: spin 2s linear infinite; display: flex;">{icon}</div>
+            Processando: {filename}
         </div>
+        <style>
+        @keyframes spin {{ 100% {{ transform: rotate(360deg); }} }}
+        </style>
         """,
         unsafe_allow_html=True,
     )
 
 
 def render_empty_state(
-    icon: str = "📁",
+    icon: str | None = None,
     title: str = "Nenhum arquivo selecionado.",
     subtitle: str = "Faça upload de arquivos XML para começar.",
 ) -> None:
     """Renderiza estado vazio estilizado.
 
     Args:
-        icon: Emoji/ícone.
+        icon: SVG string do ícone. Se None, usa padrão.
         title: Título do estado vazio.
         subtitle: Subtítulo/instrução.
     """
+    if icon is None:
+        from danfe_generator.web.components.icons import get_svg
+        icon = get_svg("upload-cloud", size=64, color="#79798A")
+
     st.markdown(
         f"""
         <div style="text-align: center; padding: 3rem; color: #79798A;">
-            <div style="font-size: 3rem; margin-bottom: 1rem;">{icon}</div>
+            <div style="margin-bottom: 1rem; display: flex; justify-content: center;">{icon}</div>
             <div style="font-family: 'Crimson Pro', serif; font-size: 1.2rem; font-style: italic;">
                 {title}<br/>{subtitle}
             </div>

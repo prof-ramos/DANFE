@@ -62,11 +62,11 @@ def _render_sidebar() -> tuple[Path | None, ColorsConfig, MarginsConfig, str]:
 
         # Navegação
         st.markdown("---")
-        render_section_title("NAVEGAÇÃO", "◇")
+        render_section_title("NAVEGAÇÃO", "compass")
 
         view_options = {
-            VIEW_UPLOAD: "📂 Upload XML",
-            VIEW_CREATE: "✏️ Criar NF-e",
+            VIEW_UPLOAD: "Upload XML",
+            VIEW_CREATE: "Criar NF-e",
         }
 
         selected_view = st.radio(
@@ -79,7 +79,7 @@ def _render_sidebar() -> tuple[Path | None, ColorsConfig, MarginsConfig, str]:
 
         # Logo upload
         st.markdown("---")
-        render_section_title("LOGOTIPO", "◇")
+        render_section_title("LOGOTIPO", "image")
 
         logo_path = None
         logo_file = st.file_uploader(
@@ -111,7 +111,7 @@ def _render_sidebar() -> tuple[Path | None, ColorsConfig, MarginsConfig, str]:
 
         # Cores
         st.markdown("---")
-        render_section_title("CORES DO DANFE", "◇")
+        render_section_title("CORES DO DANFE", "palette")
 
         col1, col2 = st.columns(2)
         with col1:
@@ -141,7 +141,7 @@ def _render_sidebar() -> tuple[Path | None, ColorsConfig, MarginsConfig, str]:
 
         # Margens
         st.markdown("---")
-        render_section_title("MARGENS (mm)", "◇")
+        render_section_title("MARGENS (mm)", "layout")
 
         col_m1, col_m2 = st.columns(2)
         with col_m1:

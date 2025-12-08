@@ -58,7 +58,9 @@ def render_upload_view(
     )
 
     # Upload section
-    st.markdown("### ◆ ARQUIVOS XML")
+    from danfe_generator.web.components.icons import render_icon_text, get_svg, COLOR_GOLD, COLOR_PRIMARY
+
+    st.markdown(render_icon_text("file-text", "ARQUIVOS XML", header=True), unsafe_allow_html=True)
 
     uploaded_files = st.file_uploader(
         "Arraste seus arquivos XML de NF-e para esta área",
@@ -70,7 +72,7 @@ def render_upload_view(
 
     if not uploaded_files:
         render_empty_state(
-            icon="📁",
+            icon=get_svg("upload-cloud", size=64, color="#79798A"),
             title="Nenhum arquivo selecionado.",
             subtitle="Faça upload de arquivos XML para começar.",
         )
@@ -80,7 +82,7 @@ def render_upload_view(
 
     # Generate button
     if st.button(
-        "◆ GERAR DANFES",
+        "GERAR DANFES",
         type="primary",
         use_container_width=True,
         key="btn_generate_upload",
@@ -95,6 +97,8 @@ def _process_files(
     margins: MarginsConfig,
 ) -> None:
     """Processa arquivos e gera DANFEs com feedback visual."""
+    from danfe_generator.web.components.icons import render_icon_text, get_svg, COLOR_PRIMARY
+
     config = DANFEConfig(
         logo_path=logo_path,
         margins=margins,
@@ -127,7 +131,10 @@ def _process_files(
                         with results_container:
                             col1, col2 = st.columns([4, 1])
                             with col1:
-                                st.success(f"◆ {uploaded_file.name}")
+                                st.markdown(
+                                    render_icon_text("check-circle", uploaded_file.name, icon_color=COLOR_PRIMARY),
+                                    unsafe_allow_html=True
+                                )
                             with col2:
                                 # Usar índice para garantir chave única
                                 st.download_button(
@@ -140,12 +147,12 @@ def _process_files(
                         success_count += 1
                     else:
                         with results_container:
-                            st.error(f"✕ {uploaded_file.name}: {result.error_message}")
+                            st.error(f"Erro em {uploaded_file.name}: {result.error_message}")
                         error_count += 1
 
         except Exception as e:
             with results_container:
-                st.error(f"✕ Erro em {uploaded_file.name}: {e}")
+                st.error(f"Erro em {uploaded_file.name}: {e}")
             error_count += 1
 
     progress.empty()
@@ -153,7 +160,7 @@ def _process_files(
 
     # Metrics
     st.markdown("---")
-    st.markdown("### ◆ RESUMO DO PROCESSAMENTO")
+    st.markdown(render_icon_text("activity", "RESUMO DO PROCESSAMENTO", header=True), unsafe_allow_html=True)
 
     col_s1, col_s2, col_s3 = st.columns(3)
     with col_s1:

@@ -265,6 +265,7 @@ source = { editable = "." }
 dependencies = [
     { name = "brazilfiscalreport" },
     { name = "pyyaml" },
+    { name = "typing-extensions" },
 ]
 
 [package.optional-dependencies]
@@ -312,6 +313,7 @@ requires-dist = [
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.1.0" },
     { name = "streamlit", marker = "extra == 'web'", specifier = ">=1.28.0" },
     { name = "types-pyyaml", marker = "extra == 'dev'", specifier = ">=6.0.0" },
+    { name = "typing-extensions", specifier = ">=4.0.0" },
     { name = "watchdog", marker = "extra == 'web'", specifier = ">=3.0.0" },
 ]
 provides-extras = ["web", "dev", "all"]

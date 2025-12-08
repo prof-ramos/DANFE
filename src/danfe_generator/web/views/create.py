@@ -82,7 +82,7 @@ def _update_nfe(nfe: NFe) -> None:
 
 def _render_section_identificacao(nfe: NFe) -> None:
     """Renderiza seção de identificação da NF-e."""
-    with st.expander("📋 1. IDENTIFICAÇÃO DA NF-e", expanded=True):
+    with st.expander("1. IDENTIFICAÇÃO DA NF-e", expanded=True):
         col1, col2, col3 = st.columns(3)
 
         with col1:
@@ -186,7 +186,7 @@ def _render_section_identificacao(nfe: NFe) -> None:
 
 def _render_section_emitente(nfe: NFe) -> None:
     """Renderiza seção do emitente."""
-    with st.expander("🏢 2. EMITENTE", expanded=False):
+    with st.expander("2. EMITENTE", expanded=False):
         col1, col2 = st.columns(2)
 
         with col1:
@@ -296,7 +296,7 @@ def _render_section_emitente(nfe: NFe) -> None:
 
 def _render_section_destinatario(nfe: NFe) -> None:
     """Renderiza seção do destinatário."""
-    with st.expander("👤 3. DESTINATÁRIO", expanded=False):
+    with st.expander("3. DESTINATÁRIO", expanded=False):
         col1, col2 = st.columns(2)
 
         with col1:
@@ -408,7 +408,7 @@ def _render_section_destinatario(nfe: NFe) -> None:
 
 def _render_section_produtos(nfe: NFe) -> None:
     """Renderiza seção de produtos."""
-    with st.expander("📦 4. PRODUTOS/SERVIÇOS", expanded=False):
+    with st.expander("4. PRODUTOS/SERVIÇOS", expanded=False):
         # Tabela de produtos usando st.data_editor
         st.markdown("**Lista de Produtos**")
 
@@ -514,7 +514,7 @@ def _render_section_produtos(nfe: NFe) -> None:
 
 def _render_section_pagamento(nfe: NFe) -> None:
     """Renderiza seção de pagamento."""
-    with st.expander("💳 5. PAGAMENTO", expanded=False):
+    with st.expander("5. PAGAMENTO", expanded=False):
         forma_options = [
             FormaPagamento.DINHEIRO,
             FormaPagamento.PIX,
@@ -562,7 +562,7 @@ def _render_section_pagamento(nfe: NFe) -> None:
 
 def _render_section_protocolo(nfe: NFe) -> None:
     """Renderiza seção de protocolo de autorização."""
-    with st.expander("📜 6. PROTOCOLO SEFAZ (Opcional)", expanded=False):
+    with st.expander("6. PROTOCOLO SEFAZ (Opcional)", expanded=False):
         nfe.protocolo.incluir = st.checkbox(
             "Incluir protocolo de autorização (protNFe)",
             value=nfe.protocolo.incluir,
@@ -598,7 +598,9 @@ def _render_section_protocolo(nfe: NFe) -> None:
 
 def _render_totais(nfe: NFe) -> None:
     """Renderiza resumo dos totais."""
-    st.markdown("### ◆ TOTAIS")
+    from danfe_generator.web.components.icons import render_icon_text, get_svg, COLOR_GOLD
+
+    st.markdown(render_icon_text("diamond", "TOTAIS", header=True), unsafe_allow_html=True)
 
     nfe.calcular_totais()
 
@@ -654,7 +656,7 @@ def _generate_and_download(
             pdf_bytes = pdf_tmp_path.read_bytes()
             pdf_filename = f"nfe_{chave}.pdf"
 
-            st.success(f"◆ NF-e gerada com sucesso!")
+            st.success(f"NF-e gerada com sucesso!")
             st.info(f"**Chave de Acesso:** {chave}")
 
             col1, col2, col3 = st.columns(3)
@@ -745,7 +747,7 @@ def render_create_view(
     col1, col2 = st.columns([3, 1])
     with col1:
         if st.button(
-            "◆ GERAR NF-e",
+            "GERAR NF-e",
             type="primary",
             use_container_width=True,
             key="btn_generate_nfe",
