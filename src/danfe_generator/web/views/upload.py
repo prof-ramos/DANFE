@@ -21,6 +21,11 @@ from danfe_generator.web.components.layout import (
     render_hero,
     render_processing_status,
 )
+from danfe_generator.web.components.icons import (
+    COLOR_PRIMARY,
+    get_svg,
+    render_icon_text,
+)
 
 if TYPE_CHECKING:
     from streamlit.runtime.uploaded_file_manager import UploadedFile
@@ -58,7 +63,7 @@ def render_upload_view(
     )
 
     # Upload section
-    from danfe_generator.web.components.icons import render_icon_text, get_svg, COLOR_GOLD, COLOR_PRIMARY
+    # Upload section
 
     st.markdown(render_icon_text("file-text", "ARQUIVOS XML", header=True), unsafe_allow_html=True)
 
@@ -97,7 +102,7 @@ def _process_files(
     margins: MarginsConfig,
 ) -> None:
     """Processa arquivos e gera DANFEs com feedback visual."""
-    from danfe_generator.web.components.icons import render_icon_text, get_svg, COLOR_PRIMARY
+    """Processa arquivos e gera DANFEs com feedback visual."""
 
     config = DANFEConfig(
         logo_path=logo_path,

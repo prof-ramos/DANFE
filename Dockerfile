@@ -7,6 +7,7 @@ USER user
 ENV PATH="/home/user/.local/bin:$PATH"
 
 WORKDIR /app
+ENV PYTHONPATH=$PYTHONPATH:/app/src
 
 # Install system dependencies if needed (e.g. for some python packages)
 # USER root
@@ -19,7 +20,7 @@ WORKDIR /app
 COPY --chown=user ./requirements.txt requirements.txt
 
 # Install dependencies
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY --chown=user . /app
@@ -29,4 +30,4 @@ EXPOSE 7860
 
 # Run Streamlit
 # Note: server.address=0.0.0.0 is crucial for Docker
-CMD ["streamlit", "run", "app.py", "--server.port=7860", "--server.address=0.0.0.0"]
+CMD ["/bin/sh", "-c", "exec streamlit run app.py --server.port=7860 --server.address=0.0.0.0"]

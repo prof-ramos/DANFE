@@ -598,7 +598,7 @@ def _render_section_protocolo(nfe: NFe) -> None:
 
 def _render_totais(nfe: NFe) -> None:
     """Renderiza resumo dos totais."""
-    from danfe_generator.web.components.icons import render_icon_text, get_svg, COLOR_GOLD
+    from danfe_generator.web.components.icons import render_icon_text
 
     st.markdown(render_icon_text("diamond", "TOTAIS", header=True), unsafe_allow_html=True)
 

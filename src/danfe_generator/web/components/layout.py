@@ -6,6 +6,7 @@ Este módulo contém o tema "Fiscal Dark" e funções de layout reutilizáveis.
 from __future__ import annotations
 
 import streamlit as st
+from danfe_generator.web.components.icons import get_svg, COLOR_GOLD, COLOR_VERDE_LIGHT
 
 # =============================================================================
 # DESIGN SYSTEM - "Fiscal Dark" Theme
@@ -409,6 +410,24 @@ THEME_CSS = """
         gap: 0.5rem;
     }
 
+    /* Icon System */
+    .icon-svg {
+        vertical-align: middle;
+        display: inline-block;
+    }
+
+    .icon-text-wrapper {
+        display: flex;
+        align-items: center;
+    }
+
+    .icon-text-header {
+        font-family: var(--font-display);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+
     /* ========================================
        METRICS & STATS
        ======================================== */
@@ -666,8 +685,6 @@ def render_hero(
         subtitle: Subtítulo descritivo.
         badge: Texto do badge.
     """
-    from danfe_generator.web.components.icons import get_svg, COLOR_VERDE_LIGHT
-
     icon = get_svg("diamond", color=COLOR_VERDE_LIGHT, size=14)
 
     st.markdown(
@@ -686,8 +703,6 @@ def render_hero(
 
 def render_sidebar_logo() -> None:
     """Renderiza logo na sidebar."""
-    from danfe_generator.web.components.icons import get_svg, COLOR_GOLD
-
     icon = get_svg("diamond", color=COLOR_GOLD, size=40, stroke_width=1.5)
 
     st.markdown(
@@ -711,8 +726,6 @@ def render_section_title(title: str, icon_name: str = "diamond") -> None:
         title: Texto do título.
         icon_name: Nome do ícone (Lucide).
     """
-    from danfe_generator.web.components.icons import get_svg, COLOR_GOLD
-
     icon_svg = get_svg(icon_name, color=COLOR_GOLD, size=16)
 
     st.markdown(
@@ -744,8 +757,6 @@ def render_file_count_badge(count: int) -> None:
     Args:
         count: Número de arquivos.
     """
-    from danfe_generator.web.components.icons import get_svg, COLOR_VERDE_LIGHT
-
     icon = get_svg("file-text", color=COLOR_VERDE_LIGHT, size=16)
 
     st.markdown(
@@ -767,8 +778,6 @@ def render_processing_status(filename: str) -> None:
     Args:
         filename: Nome do arquivo sendo processado.
     """
-    from danfe_generator.web.components.icons import get_svg, COLOR_GOLD
-
     # Ícone com animação de rotação via CSS (já definida no layout global?)
     # Vamos adicionar uma classe de animação inline ou usar a existente se houver
     icon = get_svg("refresh-cw", color=COLOR_GOLD, size=16)
@@ -803,7 +812,6 @@ def render_empty_state(
         subtitle: Subtítulo/instrução.
     """
     if icon is None:
-        from danfe_generator.web.components.icons import get_svg
         icon = get_svg("upload-cloud", size=64, color="#79798A")
 
     st.markdown(
