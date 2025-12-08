@@ -18,9 +18,11 @@
 |----------------|-----------|
 | 📄 **Geração de DANFE** | Converta XML de NFe em PDF de alta qualidade |
 | 🎨 **Personalização Visual** | Configure cores, margens e adicione logo da empresa |
-| 🖥️ **Interface Web** | Aplicação Streamlit interativa e amigável |
+| 🖥️ **Interface Web** | Aplicação Streamlit com design "Fiscal Dark" premium |
+| ✏️ **Criação de NF-e** | Crie notas fiscais manualmente via formulário completo |
 | ⌨️ **Interface CLI** | Linha de comando para automação e scripts |
 | 📦 **Processamento em Lote** | Processe múltiplos XMLs de uma só vez |
+| 🐳 **Docker Ready** | Container otimizado para deploy em produção |
 | ✅ **Validação Integrada** | Validação automática de arquivos XML e logos |
 | 🐍 **Biblioteca Python** | Use como módulo em seus próprios projetos |
 | 🧪 **Testado** | Suite completa de testes com pytest |
@@ -56,7 +58,17 @@ DANFE/
 │       ├── cli/                   # ⌨️ Interface de linha de comando
 │       │   └── main.py
 │       ├── web/                   # 🌐 Interface Streamlit
-│       │   └── app.py
+│       │   ├── app.py             # Aplicação principal
+│       │   ├── components/        # Componentes de UI reutilizáveis
+│       │   │   ├── icons.py       # Ícones SVG inline
+│       │   │   └── layout.py      # Layout, CSS e theming
+│       │   ├── logic/             # Lógica de negócio web
+│       │   │   ├── models.py      # Dataclasses e state
+│       │   │   ├── validators.py  # Validações de formulário
+│       │   │   └── xml_builder.py # Construtor de XML NF-e
+│       │   └── views/             # Views/Páginas
+│       │       ├── create.py      # Criação manual de NF-e
+│       │       └── upload.py      # Upload de XMLs existentes
 │       └── utils/                 # 🔧 Utilitários
 │           ├── colors.py          # Manipulação de cores
 │           └── file_handlers.py   # Operações de arquivo
@@ -145,12 +157,31 @@ Acesse no navegador: **[http://localhost:8501](http://localhost:8501)**
 
 #### Funcionalidades da Interface Web
 
+**Upload de XMLs existentes:**
+
 - ✅ Upload de múltiplos XMLs via drag-and-drop
 - ✅ Upload de logo personalizada
 - ✅ Seleção de cores primária, secundária e destaque
 - ✅ Configuração de margens
 - ✅ Download individual de cada PDF gerado
 - ✅ Resumo de processamento com métricas
+
+**Criação de NF-e manual:**
+
+- ✅ Formulário completo com validação em tempo real
+- ✅ Cadastro de emitente, destinatário e produtos
+- ✅ Cálculo automático de impostos
+- ✅ Geração de XML válido e download
+
+**Design "Fiscal Dark":**
+
+- ✅ Tema escuro premium inspirado em code editors
+- ✅ Cores da bandeira brasileira (verde, azul-petróleo, dourado)
+- ✅ Ícones SVG consistentes e micro-animações
+- ✅ Tema segue preferência do sistema (`prefers-color-scheme`)
+
+> **Nota sobre temas:** O tema é detectado automaticamente via CSS `prefers-color-scheme`.
+> Para forçar um tema específico, configure `STREAMLIT_THEME_BASE=dark` ou `light`.
 
 ---
 
@@ -377,6 +408,56 @@ pytest -m integration
 
 ---
 
+## 🐳 Docker
+
+### Build Local
+
+```bash
+# Build da imagem
+docker build -t danfe-generator .
+
+# Executar container
+docker run -d -p 8501:8501 --name danfe danfe-generator
+
+# Acessar aplicação
+open http://localhost:8501
+```
+
+### Docker Compose (Produção)
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  danfe:
+    build: .
+    ports:
+      - "8501:8501"
+    restart: unless-stopped
+    healthcheck:
+      # Usa Python (curl não disponível na imagem slim)
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8501/_stcore/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+```
+
+### Variáveis de Ambiente
+
+| Variável | Descrição | Padrão |
+|----------|-----------|--------|
+| `STREAMLIT_SERVER_PORT` | Porta do servidor Streamlit | `8501` |
+| `STREAMLIT_SERVER_ADDRESS` | Endereço de bind do servidor | `0.0.0.0` |
+| `STREAMLIT_SERVER_HEADLESS` | Modo headless (sem browser) | `true` |
+| `STREAMLIT_THEME_BASE` | Tema base da UI (`light` ou `dark`) | `light` |
+| `STREAMLIT_ENV` | Ambiente de execução | `production` |
+| `STREAMLIT_BROWSER_GATHER_USAGE_STATS` | Coleta de estatísticas | `false` |
+| `PYTHONPATH` | Caminho do código fonte | `/app/src` |
+| `PYTHONDONTWRITEBYTECODE` | Desabilita .pyc | `1` |
+| `PYTHONUNBUFFERED` | Output sem buffer | `1` |
+
+---
+
 ## 🔧 Desenvolvimento
 
 ### Configurar Ambiente de Desenvolvimento
@@ -419,7 +500,30 @@ pre-commit run --all-files
 
 ## 📝 Changelog
 
-### v0.2.0 (Atual)
+### v0.3.0 (Atual) — 2025-12-08
+
+> **Sem breaking changes.** Esta versão é compatível com v0.2.0.
+> Imagem Docker: `~300MB` (multi-stage build com python:3.12-slim).
+
+- 🎨 **Design "Fiscal Dark" premium**
+  - Tema escuro inspirado em code editors
+  - Paleta de cores da bandeira brasileira
+  - Ícones SVG customizados com animações
+  - Detecção automática de tema via `prefers-color-scheme`
+- ✏️ **Criação de NF-e via formulário**
+  - Interface completa para preenchimento manual
+  - Validação em tempo real de campos
+  - Geração de XML válido
+- 🐳 **Docker ready**
+  - Dockerfile multi-stage otimizado
+  - Non-root user para segurança
+  - Healthcheck integrado (Python-based)
+- 🛠️ **Arquitetura web modular**
+  - Componentes reutilizáveis (`components/`)
+  - Lógica separada (`logic/`)
+  - Views organizadas (`views/`)
+
+### v0.2.0
 
 - ✨ **Reorganização completa da codebase**
   - Estrutura de pacote Python adequada

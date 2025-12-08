@@ -1,0 +1,68 @@
+# =============================================================================
+# .dockerignore - Arquivos excluídos do contexto de build
+# =============================================================================
+
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Docs
+docs/
+*.md
+!README.md
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Misc
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Local config
+.env
+.env.*
+*.local
+
+# Test files
+# Ignora diretório de testes (test_*.py na raiz já coberto por tests/)
+tests/
+
+# Agent configs
+.agent/
+.claude/
+.gemini/
+GEMINI.md
+CLAUDE.md
