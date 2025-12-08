@@ -1,6 +1,6 @@
 """Interface Web Streamlit para o DANFE Generator.
 
-Este módulo implementa a aplicação web principal com design "Fiscal Dark",
+Este módulo implementa a aplicação web principal com design minimalista,
 servindo como ponto de entrada que roteia entre as diferentes views.
 
 Views disponíveis:
@@ -18,6 +18,11 @@ Para configurar outra porta, use: streamlit run ... --server.port 8080
 
 from __future__ import annotations
 
+import contextlib
+import csv
+import json
+import logging
+import os
 import tempfile
 from pathlib import Path
 
@@ -41,14 +46,106 @@ from danfe_generator.web.views.upload import render_upload_view
 VIEW_UPLOAD = "upload"
 VIEW_CREATE = "create"
 
-DEFAULT_PRIMARY_COLOR = "#009739"
-DEFAULT_SECONDARY_COLOR = "#002654"
-DEFAULT_ACCENT_COLOR = "#FFCC00"
+DEFAULT_PRIMARY_COLOR = "#212121"
+DEFAULT_SECONDARY_COLOR = "#F0F0F0"
+DEFAULT_ACCENT_COLOR = "#616161"
+
+
+# ============================================================================
+# Logging
+# ============================================================================
+
+
+def _configure_logging() -> None:
+    """Configura o logging com handlers e formatação adequados."""
+    root_logger = logging.getLogger()
+    if root_logger.hasHandlers():
+        return  # Evita reconfigurar se já configurado
+
+    # Detecta ambiente (dev vs prod)
+    is_development = os.getenv("STREAMLIT_ENV", "development").lower() == "development"
+    level = logging.DEBUG if is_development else logging.WARNING
+
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter(
+        fmt="%(asctime)s | %(name)s | %(levelname)s | %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+    handler.setFormatter(formatter)
+    root_logger.addHandler(handler)
+    root_logger.setLevel(level)
+
+
+_configure_logging()
+logger = logging.getLogger(__name__)
 
 
 # ============================================================================
 # Sidebar Configuration
 # ============================================================================
+
+
+@st.cache_data
+def load_ncm_data() -> list[str]:
+    """Carrega dados da tabela NCM.
+
+    Tenta carregar de:
+    1. Variável de ambiente NCM_DATA_PATH
+    2. Arquivo local em src/danfe_generator/data/ncm.json
+    """
+    # 1. Tenta via variável de ambiente, ou fallback para arquivo local
+    env_path = os.getenv("NCM_DATA_PATH")
+    path = Path(env_path) if env_path else Path(__file__).parent.parent / "data" / "ncm.json"
+
+    if not path.exists():
+        logger.warning(f"Arquivo NCM não encontrado em: {path}")
+        return []
+
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        return [
+            f"{n['Codigo']} - {n['Descricao']}"
+            for n in data.get("Nomenclaturas", [])
+        ]
+    except json.JSONDecodeError as e:
+        logger.error(f"Erro ao decodificar JSON do arquivo NCM: {path} - {e}")
+        return []
+    except OSError as e:
+        logger.error(f"Erro de I/O ao ler arquivo NCM: {path} - {e}")
+        return []
+
+
+@st.cache_data
+def load_cfop_data() -> list[str]:
+    """Carrega dados da tabela CFOP.
+
+    Tenta carregar de:
+    1. Variável de ambiente CFOP_DATA_PATH
+    2. Arquivo local em src/danfe_generator/data/cfop.csv
+    """
+    # 1. Tenta via variável de ambiente, ou fallback para arquivo local
+    env_path = os.getenv("CFOP_DATA_PATH")
+    path = Path(env_path) if env_path else Path(__file__).parent.parent / "data" / "cfop.csv"
+
+    if not path.exists():
+        logger.warning(f"Arquivo CFOP não encontrado em: {path}")
+        return []
+
+    try:
+        options = []
+        with open(path, encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if row.get("Código CFOP") and row.get("Descrição"):
+                    options.append(f"{row['Código CFOP']} - {row['Descrição']}")
+        return options
+    except csv.Error as e:
+        logger.error(f"Erro ao parsear CSV do arquivo CFOP: {path} - {e}")
+        return []
+    except OSError as e:
+        logger.error(f"Erro de I/O ao ler arquivo CFOP: {path} - {e}")
+        return []
 
 
 def _render_sidebar() -> tuple[Path | None, ColorsConfig, MarginsConfig, str]:
@@ -95,10 +192,8 @@ def _render_sidebar() -> tuple[Path | None, ColorsConfig, MarginsConfig, str]:
             if "logo_tmp_path" in st.session_state:
                 old_path = Path(st.session_state["logo_tmp_path"])
                 if old_path.exists():
-                    try:
+                    with contextlib.suppress(OSError):
                         old_path.unlink()
-                    except OSError:
-                        pass  # Ignora erro se não conseguir remover
 
             # Cria novo arquivo temporário
             with tempfile.NamedTemporaryFile(
@@ -158,6 +253,38 @@ def _render_sidebar() -> tuple[Path | None, ColorsConfig, MarginsConfig, str]:
             right=margin_right,
         )
 
+        # Consulta NCM
+        st.markdown("---")
+        render_section_title("CONSULTA NCM", "◇")
+
+        ncm_options = load_ncm_data()
+        if ncm_options:
+            st.selectbox(
+                "Pesquisar NCM",
+                options=ncm_options,
+                index=None,
+                placeholder="Digite para buscar...",
+                key="ncm_selector",
+            )
+        else:
+            st.caption("Tabela NCM não encontrada.")
+
+        # Consulta CFOP
+        st.markdown("---")
+        render_section_title("CONSULTA CFOP", "◇")
+
+        cfop_options = load_cfop_data()
+        if cfop_options:
+            st.selectbox(
+                "Pesquisar CFOP",
+                options=cfop_options,
+                index=None,
+                placeholder="Digite para buscar...",
+                key="cfop_selector",
+            )
+        else:
+            st.caption("Tabela CFOP não encontrada.")
+
         # Sobre
         st.markdown("---")
         st.markdown(
@@ -180,7 +307,7 @@ def _render_sidebar() -> tuple[Path | None, ColorsConfig, MarginsConfig, str]:
 
 def main() -> None:
     """Ponto de entrada principal da aplicação Streamlit."""
-    setup_page(title="DANFE Generator | Fiscal Dark")
+    setup_page(title="DANFE Generator")
 
     try:
         # Configurações da sidebar

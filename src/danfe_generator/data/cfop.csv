@@ -1,0 +1,116 @@
+Código CFOP,Descrição,Grupo,Categoria,Tributação
+1000,ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO ESTADO,1,Entrada,Estadual
+1100,Compras para Industrialização/Comercialização/Serviços,1,Compra,Estadual
+1101,Compra para industrialização ou produção rural,1,Compra,Estadual
+1102,Compra para comercialização,1,Compra,Estadual
+1200,Devoluções de Vendas ou Anulações,1,Devolução,Estadual
+1201,Devolução de venda de produção do estabelecimento,1,Devolução,Estadual
+1202,Devolução de venda de mercadoria adquirida ou de terceiros,1,Devolução,Estadual
+1250,Compras de Energia Elétrica,1,Energia,Estadual
+1251,Compra de energia elétrica para distribuição ou comercialização,1,Energia,Estadual
+1252,Compra de energia elétrica por estabelecimento industrial,1,Energia,Estadual
+1300,Aquisições de Serviços de Comunicação,1,Serviços,Estadual
+1301,Aquisição de serviço de comunicação para execução de serviço,1,Serviços,Estadual
+1350,Aquisições de Serviços de Transporte,1,Serviços,Estadual
+1351,Aquisição de serviço de transporte para execução de serviço,1,Serviços,Estadual
+1400,Entradas de Mercadorias Sujeitas à Substituição Tributária,1,Substituição,Estadual
+1401,Compra para industrialização - substituição tributária,1,Substituição,Estadual
+1403,Compra para comercialização - substituição tributária,1,Substituição,Estadual
+1500,Entradas de Mercadorias com Fim Específico de Exportação,1,Exportação,Estadual
+1501,Entrada de mercadoria recebida com fim específico de exportação,1,Exportação,Estadual
+1550,Operações com Bens de Ativo Imobilizado,1,Ativo,Estadual
+1551,Compra de bem para o ativo imobilizado,1,Ativo,Estadual
+1600,Créditos e Ressarcimentos de ICMS,1,Crédito,Estadual
+1601,Recebimento de crédito de ICMS por transferência,1,Crédito,Estadual
+1900,Outras Entradas Não Especificadas,1,Outros,Estadual
+1949,Outra entrada de mercadoria ou prestação de serviço não especificada,1,Outros,Estadual
+2000,ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DE OUTROS ESTADOS,2,Entrada,Interestadual
+2100,Compras para Industrialização/Comercialização/Serviços,2,Compra,Interestadual
+2101,Compra para industrialização ou produção rural,2,Compra,Interestadual
+2102,Compra para comercialização,2,Compra,Interestadual
+2200,Devoluções de Vendas ou Anulações,2,Devolução,Interestadual
+2201,Devolução de venda de produção do estabelecimento,2,Devolução,Interestadual
+2202,Devolução de venda de mercadoria adquirida ou de terceiros,2,Devolução,Interestadual
+2250,Compras de Energia Elétrica,2,Energia,Interestadual
+2251,Compra de energia elétrica para distribuição ou comercialização,2,Energia,Interestadual
+2300,Aquisições de Serviços de Comunicação,2,Serviços,Interestadual
+2301,Aquisição de serviço de comunicação para execução de serviço,2,Serviços,Interestadual
+2400,Entradas de Mercadorias Sujeitas à Substituição Tributária,2,Substituição,Interestadual
+2401,Compra para industrialização - substituição tributária,2,Substituição,Interestadual
+2500,Entradas de Mercadorias com Fim Específico de Exportação,2,Exportação,Interestadual
+2501,Entrada de mercadoria recebida com fim específico de exportação,2,Exportação,Interestadual
+2550,Operações com Bens de Ativo Imobilizado,2,Ativo,Interestadual
+2551,Compra de bem para o ativo imobilizado,2,Ativo,Interestadual
+2900,Outras Entradas Não Especificadas,2,Outros,Interestadual
+2949,Outra entrada de mercadoria ou prestação de serviço não especificado,2,Outros,Interestadual
+3000,ENTRADAS OU AQUISIÇÕES DE SERVIÇOS DO EXTERIOR,3,Entrada,Externa
+3100,Compras para Industrialização/Comercialização/Serviços,3,Compra,Externa
+3101,Compra para industrialização ou produção rural,3,Compra,Externa
+3102,Compra para comercialização,3,Compra,Externa
+3200,Devoluções de Vendas ou Anulações,3,Devolução,Externa
+3201,Devolução de venda de produção do estabelecimento,3,Devolução,Externa
+3250,Compras de Energia Elétrica,3,Energia,Externa
+3251,Compra de energia elétrica para distribuição,3,Energia,Externa
+3350,Aquisições de Serviços de Transporte,3,Serviços,Externa
+3351,Aquisição de serviço de transporte para execução de serviço,3,Serviços,Externa
+3550,Operações com Bens de Ativo Imobilizado,3,Ativo,Externa
+3551,Compra de bem para o ativo imobilizado,3,Ativo,Externa
+3900,Outras Entradas Não Especificadas,3,Outros,Externa
+3949,Outra entrada de mercadoria ou prestação de serviço não especificada,3,Outros,Externa
+5000,SAÍDAS OU PRESTAÇÕES DE SERVIÇOS PARA O ESTADO,5,Saída,Estadual
+5100,Vendas de Produção Própria ou de Terceiros,5,Venda,Estadual
+5101,Venda de produção do estabelecimento,5,Venda,Estadual
+5102,Venda de mercadoria adquirida ou recebida de terceiros,5,Venda,Estadual
+5200,Devoluções de Compras ou Anulações,5,Devolução,Estadual
+5201,Devolução de compra para industrialização,5,Devolução,Estadual
+5202,Devolução de compra para comercialização,5,Devolução,Estadual
+5250,Vendas de Energia Elétrica,5,Energia,Estadual
+5251,Venda de energia elétrica para distribuição,5,Energia,Estadual
+5300,Prestações de Serviços de Comunicação,5,Serviços,Estadual
+5301,Prestação de serviço de comunicação para execução de serviço,5,Serviços,Estadual
+5350,Prestações de Serviços de Transporte,5,Serviços,Estadual
+5351,Prestação de serviço de transporte para execução de serviço,5,Serviços,Estadual
+5400,Saídas de Mercadorias Sujeitas à Substituição Tributária,5,Substituição,Estadual
+5401,Venda de produção - substituição tributária (substituto),5,Substituição,Estadual
+5403,Venda de mercadoria - substituição tributária (substituto),5,Substituição,Estadual
+5500,Remessas com Fim Específico de Exportação,5,Exportação,Estadual
+5501,Remessa de produção com fim específico de exportação,5,Exportação,Estadual
+5550,Operações com Bens de Ativo Imobilizado,5,Ativo,Estadual
+5551,Venda de bem do ativo imobilizado,5,Ativo,Estadual
+5600,Créditos e Ressarcimentos de ICMS,5,Crédito,Estadual
+5601,Transferência de crédito de ICMS acumulado,5,Crédito,Estadual
+5900,Outras Saídas Não Especificadas,5,Outros,Estadual
+5949,Outra saída de mercadoria ou prestação de serviço não especificada,5,Outros,Estadual
+6000,SAÍDAS OU PRESTAÇÕES DE SERVIÇOS PARA OUTROS ESTADOS,6,Saída,Interestadual
+6100,Vendas de Produção Própria ou de Terceiros,6,Venda,Interestadual
+6101,Venda de produção do estabelecimento,6,Venda,Interestadual
+6102,Venda de mercadoria adquirida ou recebida de terceiros,6,Venda,Interestadual
+6200,Devoluções de Compras ou Anulações,6,Devolução,Interestadual
+6201,Devolução de compra para industrialização,6,Devolução,Interestadual
+6202,Devolução de compra para comercialização,6,Devolução,Interestadual
+6250,Vendas de Energia Elétrica,6,Energia,Interestadual
+6251,Venda de energia elétrica para distribuição,6,Energia,Interestadual
+6300,Prestações de Serviços de Comunicação,6,Serviços,Interestadual
+6301,Prestação de serviço de comunicação para execução de serviço,6,Serviços,Interestadual
+6400,Saídas de Mercadorias Sujeitas à Substituição Tributária,6,Substituição,Interestadual
+6401,Venda de produção - substituição tributária (substituto),6,Substituição,Interestadual
+6500,Remessas com Fim Específico de Exportação,6,Exportação,Interestadual
+6501,Remessa de produção com fim específico de exportação,6,Exportação,Interestadual
+6550,Operações com Bens de Ativo Imobilizado,6,Ativo,Interestadual
+6551,Venda de bem do ativo imobilizado,6,Ativo,Interestadual
+6900,Outras Saídas Não Especificadas,6,Outros,Interestadual
+6949,Outra saída de mercadoria ou prestação de serviço não especificada,6,Outros,Interestadual
+7000,SAÍDAS OU PRESTAÇÕES DE SERVIÇOS PARA O EXTERIOR,7,Saída,Externa
+7100,Vendas de Produção Própria ou de Terceiros,7,Venda,Externa
+7101,Venda de produção para exportação,7,Venda,Externa
+7102,Venda de mercadoria para exportação,7,Venda,Externa
+7200,Devoluções de Compras ou Anulações,7,Devolução,Externa
+7201,Devolução de venda de produção,7,Devolução,Externa
+7250,Vendas de Energia Elétrica,7,Energia,Externa
+7251,Venda de energia elétrica,7,Energia,Externa
+7350,Prestações de Serviços de Transporte,7,Serviços,Externa
+7351,Prestação de serviço de transporte,7,Serviços,Externa
+7500,Exportação de Mercadorias,7,Exportação,Externa
+7501,Exportação de mercadoria recebida com fim específico,7,Exportação,Externa
+7900,Outras Saídas Não Especificadas,7,Outros,Externa
+7949,Outra saída de mercadoria ou prestação de serviço,7,Outros,Externa

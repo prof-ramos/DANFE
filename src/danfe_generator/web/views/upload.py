@@ -131,7 +131,7 @@ def _process_files(
                             with col2:
                                 # Usar índice para garantir chave única
                                 st.download_button(
-                                    label="⬇ PDF",
+                                    label="Download PDF",
                                     data=pdf_bytes,
                                     file_name=f"{Path(uploaded_file.name).stem}.pdf",
                                     mime="application/pdf",

@@ -18,36 +18,22 @@ import streamlit as st
 from danfe_generator.core import ColorsConfig, DANFEConfig, DANFEGenerator, MarginsConfig
 from danfe_generator.web.components.layout import render_hero
 from danfe_generator.web.logic.models import (
+    UF,
     DestinoOperacao,
-    Emitente,
-    Endereco,
-    Destinatario,
     FinalidadeNFe,
     FormaPagamento,
-    Identificacao,
-    ImpostosItem,
     IndicadorIEDest,
-    ModalidadeFrete,
     NFe,
     Pagamento,
-    PresencaComprador,
     Produto,
-    ProtocoloAutorizacao,
     RegimeTributario,
     TipoAmbiente,
     TipoNF,
-    Transporte,
-    UF,
 )
 from danfe_generator.web.logic.validators import (
-    format_cnpj,
-    validate_cfop,
     validate_cnpj,
-    validate_cpf,
-    validate_ncm,
 )
 from danfe_generator.web.logic.xml_builder import build_xml, gerar_chave_acesso
-
 
 # =============================================================================
 # Session State Keys
@@ -82,7 +68,7 @@ def _update_nfe(nfe: NFe) -> None:
 
 def _render_section_identificacao(nfe: NFe) -> None:
     """Renderiza seção de identificação da NF-e."""
-    with st.expander("📋 1. IDENTIFICAÇÃO DA NF-e", expanded=True):
+    with st.expander("1. IDENTIFICAÇÃO DA NF-e", expanded=True):
         col1, col2, col3 = st.columns(3)
 
         with col1:
@@ -186,7 +172,7 @@ def _render_section_identificacao(nfe: NFe) -> None:
 
 def _render_section_emitente(nfe: NFe) -> None:
     """Renderiza seção do emitente."""
-    with st.expander("🏢 2. EMITENTE", expanded=False):
+    with st.expander("2. EMITENTE", expanded=False):
         col1, col2 = st.columns(2)
 
         with col1:
@@ -296,7 +282,7 @@ def _render_section_emitente(nfe: NFe) -> None:
 
 def _render_section_destinatario(nfe: NFe) -> None:
     """Renderiza seção do destinatário."""
-    with st.expander("👤 3. DESTINATÁRIO", expanded=False):
+    with st.expander("3. DESTINATÁRIO", expanded=False):
         col1, col2 = st.columns(2)
 
         with col1:
@@ -408,11 +394,11 @@ def _render_section_destinatario(nfe: NFe) -> None:
 
 def _render_section_produtos(nfe: NFe) -> None:
     """Renderiza seção de produtos."""
-    with st.expander("📦 4. PRODUTOS/SERVIÇOS", expanded=False):
+    with st.expander("4. PRODUTOS/SERVIÇOS", expanded=False):
         # Tabela de produtos usando st.data_editor
         st.markdown("**Lista de Produtos**")
 
-        if st.button("➕ Adicionar Produto", key="btn_add_prod"):
+        if st.button("+ Adicionar Produto", key="btn_add_prod"):
             novo_produto = Produto(
                 numero_item=len(nfe.produtos) + 1,
                 codigo=f"PROD{len(nfe.produtos) + 1:03d}",
@@ -473,8 +459,8 @@ def _render_section_produtos(nfe: NFe) -> None:
                     with col7:
                         vlr = st.number_input(
                             "Valor Unit.",
-                            min_value=0.0001,
-                            value=float(produto.valor_unitario),
+                            min_value=0.01,
+                            value=float(produto.valor_unitario) or 0.01,
                             format="%.4f",
                             key=f"prod_vlr_{idx}",
                         )
@@ -499,7 +485,7 @@ def _render_section_produtos(nfe: NFe) -> None:
                     with col9:
                         st.metric("ICMS", f"R$ {produto.impostos.valor_icms:.2f}")
                     with col10:
-                        if st.button("🗑️ Remover", key=f"btn_rm_prod_{idx}"):
+                        if st.button("Remover", key=f"btn_rm_prod_{idx}"):
                             nfe.produtos.pop(idx)
                             # Renumerar itens
                             for i, p in enumerate(nfe.produtos):
@@ -514,7 +500,7 @@ def _render_section_produtos(nfe: NFe) -> None:
 
 def _render_section_pagamento(nfe: NFe) -> None:
     """Renderiza seção de pagamento."""
-    with st.expander("💳 5. PAGAMENTO", expanded=False):
+    with st.expander("5. PAGAMENTO", expanded=False):
         forma_options = [
             FormaPagamento.DINHEIRO,
             FormaPagamento.PIX,
@@ -562,7 +548,7 @@ def _render_section_pagamento(nfe: NFe) -> None:
 
 def _render_section_protocolo(nfe: NFe) -> None:
     """Renderiza seção de protocolo de autorização."""
-    with st.expander("📜 6. PROTOCOLO SEFAZ (Opcional)", expanded=False):
+    with st.expander("6. PROTOCOLO SEFAZ (Opcional)", expanded=False):
         nfe.protocolo.incluir = st.checkbox(
             "Incluir protocolo de autorização (protNFe)",
             value=nfe.protocolo.incluir,
@@ -654,7 +640,7 @@ def _generate_and_download(
             pdf_bytes = pdf_tmp_path.read_bytes()
             pdf_filename = f"nfe_{chave}.pdf"
 
-            st.success(f"◆ NF-e gerada com sucesso!")
+            st.success("◆ NF-e gerada com sucesso!")
             st.info(f"**Chave de Acesso:** {chave}")
 
             col1, col2, col3 = st.columns(3)
